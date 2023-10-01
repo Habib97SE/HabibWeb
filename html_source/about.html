@@ -1,0 +1,135 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="{{{description}}}" />
+    <meta name="keywords" content="{{{keywords}}}" />
+
+    <title>Homepage</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/spectre.css/dist/spectre.min.css"
+    />
+
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      .main-content {
+        margin: auto;
+      }
+      .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      article {
+        margin: auto;
+      }
+      main {
+        margin: 10vh auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hamburger-container">
+      <input type="checkbox" id="menu-toggle" />
+      <label for="menu-toggle" class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </label>
+      <header class="navbar">
+        <nav class="navbar-section">
+          <ul>
+            <li class="nav-item navbar-brand">
+              <a href="#">HabibDev.</a>
+            </li>
+            <li class="nav-item"><a href="#">About</a></li>
+            <li class="nav-item"><a href="#">Portfolio</a></li>
+            <li class="nav-item"><a href="#">Blog posts</a></li>
+            <li class="nav-item"><a href="#">Guest posts</a></li>
+            <li class="nav-item"><a href="#">Contact me</a></li>
+          </ul>
+        </nav>
+      </header>
+    </div>
+    <main>
+      <article class="column col-8 col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h1>Blog post title</h1>
+          </div>
+          <div class="divider"></div>
+          <div class="card-body">
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
+              voluptatum, quibusdam, voluptate, quia quod quos voluptas
+              voluptatem quas doloribus quidem natus. Quisquam voluptatum,
+              quibusdam, voluptate, quia quod quos voluptas voluptatem quas
+              doloribus quidem natus.
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
+              voluptatum, quibusdam, voluptate, quia quod quos voluptas
+              voluptatem quas doloribus quidem natus. Quisquam voluptatum,
+              quibusdam, voluptate, quia quod quos voluptas voluptatem quas
+              doloribus quidem natus.
+            </p>
+            <img
+              src="https://placehold.co/600x300"
+              alt=""
+              class="img-responsive"
+            />
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
+              voluptatum, quibusdam, voluptate, quia quod quos voluptas
+              voluptatem quas doloribus quidem natus. Quisquam voluptatum,
+              quibusdam, voluptate, quia quod quos voluptas voluptatem quas
+              doloribus quidem natus.
+            </p>
+            <img
+              src="https://placehold.co/600x300"
+              alt=""
+              class="img-responsive"
+            />
+          </div>
+          <div class="divider"></div>
+          <div class="card-footer">
+            <span class="label">Published on 2023-10-01</span>
+          </div>
+        </div>
+      </article>
+    </main>
+    <footer class="footer">
+      <div class="container">
+        <div class="columns" style="align-items: center">
+          <div class="column col-4 col-sm-12 col-md-6">
+            <nav>
+              <ul>
+                <li class="nav-item"><a href="#">About</a></li>
+                <li class="nav-item"><a href="#">Portfolio</a></li>
+                <li class="nav-item"><a href="#">Blog posts</a></li>
+                <li class="nav-item"><a href="#">Guest posts</a></li>
+                <li class="nav-item"><a href="#">Contact me</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="column col-4 col-sm-12 col-md-6">
+            <p>&copy; 2023 HabibDev. All rights reserved.</p>
+          </div>
+          <div class="column col-sm-12 col-md-9">
+            <div class="input-group">
+              <input
+                class="form-input"
+                type="text"
+                placeholder="Subscribe to our newsletter"
+                id="input-example-1"
+              />
+              <button class="btn btn-primary input-group-btn">Subscribe</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

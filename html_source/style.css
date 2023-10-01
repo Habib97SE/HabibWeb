@@ -1,0 +1,274 @@
+.navbar-section {
+    background-color: #000;
+
+}
+
+.navbar-section .navbar-brand {
+    color: #fff;
+    margin-right: 20px;
+}
+
+.navbar-section ul {
+    list-style-type: none;
+}
+
+.navbar-section ul li {
+    padding: 10px;
+    display: inline-block;
+}
+
+.navbar-section a {
+    color: #fff;
+}
+
+.hamburger span {
+    background-color: #fff;
+    display: block;
+    height: 3px;
+    margin: 5px 0;
+    width: 25px;
+}
+
+.hamburger-container:hover {
+    cursor: pointer;
+}
+
+#menu-toggle {
+    display: none;
+}
+
+.hero {
+    background-image: url("./slide.jpg");
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.hero-body {
+    text-align: left;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 50%;
+}
+
+.hero-body h1 {
+    font-size: calc(1rem + 2vw);
+}
+
+.hero-body p {
+    font-size: calc(1rem + 1vw);
+}
+
+.hero-body a {
+    margin: 10px;
+}
+
+.navbar {
+    background-color: #000;
+}
+
+.card-body ul {
+    list-style-type: none;
+}
+
+.card-body ul li {
+    padding: 10px;
+    display: block;
+    text-align: center;
+}
+
+.main-section {
+    background-color: #f2f2f2;
+    padding: 20px;
+
+}
+
+.sidebar {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border-right: 1px solid #f7f7f7;
+
+}
+
+.sidebar img {
+    border: 1px solid #000;
+}
+
+.sidebar li {
+    padding: 10px;
+    display: block;
+    text-align: center;
+    list-style-type: none;
+
+}
+
+.sidebar h3 {
+    border-bottom: 1px solid #000;
+    padding-bottom: 10px;
+}
+
+.sidebar li:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+}
+
+.main-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.main-content .columns {
+    width: 100%;
+    margin: 50px 0;
+}
+
+.footer {
+    background-color: #000;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.footer ul {
+    list-style-type: none;
+}
+
+.footer ul li {
+    padding: 10px;
+    display: inline-block;
+}
+
+.footer ul li a {
+    color: #fff;
+}
+
+@media screen and (min-width: 992px) {
+    #menu-toggle {
+        display: none;
+    }
+
+    .hamburger {
+        display: none;
+    }
+
+    .navbar {
+        display: block;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .navbar-section {
+        width: 80%;
+        margin: 0 auto;
+    }
+
+    /* .page-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+
+    }
+
+    .page-container main {
+        flex: 1;
+
+    } */
+}
+
+@media screen and (max-width: 768px) {
+    .navbar {
+        display: none;
+    }
+
+    navbar-brand {
+        display: block;
+        position: absolute;
+        top: 0;
+        text-align: center;
+    }
+
+    .navbar-section li {
+        display: block;
+        text-align: center;
+        padding: 20px;
+        overflow: hidden;
+        z-index: 100;
+    }
+
+    .hamburger-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        background-color: #000;
+        min-height: 5vh;
+    }
+
+    .hamburger-container .navbar-brand {
+        color: #fff;
+    }
+
+    .hamburger {
+        display: block;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        z-index: 10;
+    }
+
+    .hamburger:hover {
+        cursor: pointer;
+    }
+
+    /* Show navbar when user click on .hamburger */
+    #menu-toggle:checked~.navbar {
+        display: block;
+    }
+
+    .desktop-version {
+        display: none;
+    }
+
+    .navbar .navbar-section {
+        display: block;
+    }
+
+    .navbar {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #000;
+        z-index: 100;
+        height: 98vh;
+    }
+
+    .navbar li {
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+        font-size: calc(1rem + 1vw);
+    }
+
+    .hero-body {
+        width: 100%;
+        text-align: center;
+    }
+}
