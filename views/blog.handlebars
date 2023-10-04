@@ -1,0 +1,25 @@
+{{> header}}
+
+<main>
+    <h1>Blog</h1>
+    {{#if main.posts}}
+    {{#each main.posts}}
+    <article>
+        <h2>{{title}}</h2>
+        <p>{{content}}</p>
+    </article>
+    {{/each}}
+    {{else}}
+    <p>No posts found.</p>
+    {{/if}}
+    <div class="pagination">
+        {{#if main.prev}}
+        <a href="/blog/page/{{main.prev}}">&laquo; Newer</a>
+        {{/if}}
+        {{#if main.next}}
+        <a href="/blog/page/{{main.next}}">Older &raquo;</a>
+        {{/if}}
+    </div>
+</main>
+
+{{> footer}}

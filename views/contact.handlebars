@@ -1,0 +1,93 @@
+{{> header}}
+
+<main class="container" style="width: 90%; margin: auto;">
+        <div class="columns my-2">
+            
+                <section class="column col-6 col col-md-12 ">
+                    <h1>Contact me</h1>
+                    <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
+                    voluptatum, quibusdam, quia, quod voluptate voluptatem quos
+                    voluptatibus quas doloribus quidem voluptates. Quisquam
+                    voluptatum, quibusdam, quia, quod voluptate voluptatem quos
+                    voluptatibus quas doloribus quidem voluptates.
+                    </p>
+                    <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
+                    voluptatum, quibusdam, quia, quod voluptate voluptatem quos
+                    voluptatibus quas doloribus quidem voluptates. Quisquam
+                    voluptatum, quibusdam, quia, quod voluptate voluptatem quos
+                    voluptatibus quas doloribus quidem voluptates.
+                    </p>
+                    <img src="https://placehold.co/800x600" class="img-responsive" alt="" />
+                </section>
+                <section class="column col-6 col-md-12 parent">
+                    <h1>Send me a message</h1>
+                        {{#if main.submissionMessage}}
+                        
+                            {{{main.submissionMessage}}}
+                        
+                        {{/if}}
+                    
+                
+                    <form action="/contact" method="POST" class="form-horizontal col-8 col-md-12">
+                    <div class="col-12 form-group">
+                        <div class="col-3 col-sm-12">
+                        <label class="form-label" for="name">Name</label>
+                        </div>
+                        <div class="col-9 col-sm-12">
+                        <input
+                            class="form-input"
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Name"
+                            value="{{{main.name}}}"
+                        />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-3 col-sm-12">
+                        <label class="form-label" for="email">E-mail address</label>
+                        </div>
+                        <div class="col-9 col-sm-12">
+                        <input
+                            class="form-input"
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="john@example.com"
+                            value="{{{main.email}}}"
+                        />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-3 col-sm-12">
+                        <label class="form-label" for="message">Message</label>
+                        </div>
+                        <div class="col-9 col-sm-12">
+                        <textarea
+                            class="form-input"
+                            id="message"
+                            placeholder="Textarea"
+                            rows="3"
+                            name="message"
+                            value="{{{main.message}}}"
+                        ></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-3 col-sm-12"></div>
+                        <div class="col-9 col-sm-12">
+                        <button class="btn btn-primary input-group-btn">
+                            Submit
+                        </button>
+                        </div>
+                    </div>
+                    </form>
+                </section>  
+
+        </div>
+      </main>
+
+{{> footer}}

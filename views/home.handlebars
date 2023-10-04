@@ -1,0 +1,173 @@
+{{> header}}
+
+<main>
+      <div class="hero">
+        <div class="hero-body">
+          <h1>Hi, I'm Habib</h1>
+          <p>
+            I'm a full-stack web developer. I love to build web applications
+            using the latest technologies.
+          </p>
+          <a href="/portfolio" class="btn btn-success">Portfolio</a>
+          <a href="/contact" class="btn btn-primary">Contact me</a>
+        </div>
+      </div>
+      <div class="container main-section">
+        <div class="columns">
+          <!-- Sidebar -->
+          <div class="column col-3 col-sm-12 col-md-4 sidebar">
+            <h3>Habib Hezarehee</h3>
+            <img class="s-circle" src="https://placehold.co/200x200" alt="" />
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
+              voluptatum, quibusdam, quia, voluptate quod quos dolorum
+              voluptatibus quae voluptas quas quibusdam, quia, voluptate quod
+              quos dolorum voluptatibus quae voluptas quas.
+            </p>
+            <code> Address: {{main.address}}</code>
+            <ul>
+              <li><a target="_blank" href="{{main.linkedin}}">Linkedin</a></li>
+              <li><a target="_blank" href="{{main.github}}">Github</a></li>
+              <li><a  href="mailto:{{main.email_address}}">{{main.email_address}}</a></li>
+              <li><a  href="tel:{{main.phone_number}}">{{main.phone_number}}</a></li>
+            </ul>
+          </div>
+
+          <!-- Main Content Area -->
+          <div class="column col-9 col-sm-12 col-md-8 main-content">
+            <!-- Row 1: Blog posts by Author -->
+            <div class="columns">
+              <div class="column col-12">
+                <h4>{{@index}} Blog posts by Author</h4>
+                <p>
+                  I usually write about web development, programming, and other
+                  related topics.
+                   {{#if main.guestPosts.length}}
+                  <a href="#" style="float: right; padding-right: 30px"
+                    >View all</a
+                  >
+                  {{/if}}
+                </p>
+              </div>
+              {{#if main.blogPosts.length}}
+                {{#each main.blogPosts}}
+                    <!-- Blog Post Card --> 
+                    <div class="column col-4 col-sm-12">
+                        <div class="card">
+                            <div class="card-image">
+                                <img src="{{main_image}}" class="img-responsive" alt="{{title}}">
+                            </div>
+                            <div class="card-header">
+                                <h4>{{title}}</h4>
+                                <p>{{content}}</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="/blog/{{blog_id}}" class="btn btn-primary">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                {{/each}}
+              {{else}}
+                <p class="bg-danger">
+                    No blog posts found.
+                </p>
+              {{/if}}
+
+                
+                
+            
+            </div>
+            <div class="divider"></div>
+            <!-- Row 2: Blog posts by Guests -->
+            <div class="columns">
+              <div class="column col-12">
+                <h4>Blog posts by Guests</h4>
+                <p>
+                  Recent blog post sent by users. If you want to send a blog
+                  post to me, please <a href="/contact">contact me</a>.
+                  {{#if main.guestPosts.length}}
+                  <a href="#" style="float: right; padding-right: 30px"
+                    >View all</a
+                  >
+                  {{/if}}
+                </p>
+              </div>
+              <!-- Guest post Card -->
+              {{#if main.guestPosts.length}}
+              {{#each main.guestPosts}}
+              <div class="column col-4 col-sm-12">
+                <div class="card">
+                  <div class="card-image">
+                    <img
+                      src="{{main_image}}"
+                      class="img-responsive"
+                      alt="{{title}}"
+                    />
+                  </div>
+                  <div class="card-header">
+                    <h4>{{title}}</h4>
+                    <p>{{content}}</p>
+                  </div>
+                  <div class="card-footer">
+                    <a href="/guest/{{guest_id}}" class="btn btn-primary"
+                      >Read More</a>
+                  </div>
+                </div>
+              </div>
+              {{/each}}
+              {{else}}
+                <p class="bg-danger">
+                    No guest post found.
+                </p>
+              {{/if}}
+            </div>
+
+            <!-- Row 3: Portfolio -->
+            <div class="columns">
+              <div class="column col-12">
+                <h4>Portfolio</h4>
+                <p>
+                  My last three projects are listed here.
+                   {{#if main.guestPosts.length}}
+                  <a href="#" style="float: right; padding-right: 30px"
+                    >View all</a
+                  >
+                  {{/if}}
+                </p>
+              </div>
+              <!-- Project Card -->
+              {{#if main.portfolio.length}}
+              {{#each main.portfolio}}
+              <div class="column col-4 col-sm-12">
+                <div class="card">
+                  <div class="card-image">
+                    <img
+                      src="{{main_image}}"
+                      class="img-responsive"
+                      alt="{{title}}"
+                    />
+                  </div>
+                  <div class="card-header">
+                    <h4>{{title}}</h4>
+                    <p>{{description}}</p>
+                  </div>
+                  <div class="card-footer">
+                    <a href="/portfolio/{{portfolio_id}}" class="btn btn-primary"
+                      >Read More</a>
+                  </div>
+                </div>
+              </div> 
+              {{/each}}
+              {{else}}
+                <p class="bg-danger">
+                    No portfolio found.
+                </p>
+              {{/if}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+{{> footer}}

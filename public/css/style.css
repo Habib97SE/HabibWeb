@@ -1,3 +1,26 @@
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.text-success {
+    color: #28a745 !important;
+}
+
+.text-warning {
+    color: #ffc107 !important;
+}
+
+.text-info {
+    color: #17a2b8 !important;
+}
+
+.bg-danger {
+    background-color: #dc3545 !important;
+    color: #fff !important;
+    padding: 12px 7px;
+    border-radius: 4px;
+}
+
 .navbar-section {
     background-color: #000;
 
@@ -38,7 +61,7 @@
 }
 
 .hero {
-    background-image: url("./slide.jpg");
+    background-image: url("../images/slide.jpg");
     color: #fff;
     height: 100vh;
     display: flex;
@@ -156,6 +179,15 @@
 .footer ul li a {
     color: #fff;
 }
+
+.parent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+
 
 @media screen and (min-width: 992px) {
     #menu-toggle {
