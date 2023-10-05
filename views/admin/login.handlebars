@@ -1,0 +1,59 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="{{{header.description}}}" />
+    <meta name="keywords" content="{{{header.keywords}}}" />
+
+    <title>{{header.title}}</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/spectre.css/dist/spectre.min.css"
+    />
+
+    <link rel="stylesheet" href="/css/admin.css" />
+  </head>
+  <body>
+
+    <main class="container parent">
+      <div class="col-4 col-md-9 col-sm-12 col-mx-auto">
+        <form method="POST" action="/admin/login">
+          <div class="form-group">
+            <label class="form-label" for="email">Email</label>
+            <input
+              class="form-input"
+              type="email"
+              name="email"
+              id="email"
+              placeholder="Email"
+              value="{{email}}"
+            />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              class="form-input"
+              type="password"
+              name="password"
+              id="password"
+              placeholder="Password"
+              value="{{password}}"
+            />
+          </div>
+          <div class="form-group">
+            <button class="btn btn-primary" type="submit">Login</button>
+            <button class="btn btn-link col-sm-12" type="reset">Reset</button>
+            {{#if error}}
+              <div class="toast toast-error">
+                {{error}}
+              </div>
+            {{/if}}
+
+          </div>
+        </form>
+      </div>
+    </main>
+
+  </body>
+</html>

@@ -5,22 +5,22 @@
             <nav>
               <ul>
                 <li>
-                  <a href="#">Home</a>
+                  <a href="/">Home</a>
                 </li>
                 <li>
-                  <a href="#">About</a>
+                  <a href="/about">About</a>
                 </li>
                 <li>
-                  <a href="#">Portfolio</a>
+                  <a href="/projects">Projects</a>
                 </li>
                 <li>
-                  <a href="#">Blog</a>
+                  <a href="/blog">Blog</a>
                 </li>
                 <li>
-                  <a href="#">Guest posts</a>
+                  <a href="/guest-blog">Guest posts</a>
                 </li>
                 <li>
-                  <a href="#">Contact</a>
+                  <a href="/contact">Contact</a>
                 </li>
               </ul>
             </nav>
@@ -29,14 +29,18 @@
             {{{footer.text}}}
           </div>
           <div class="column col-sm-12 col-md-9">
+            <form method="POST" action="/newsletter/subscribe">
             <div class="input-group">
               <input
                 class="form-input"
-                type="text"
+                type="email"
+                name="email"
                 placeholder="Subscribe to our newsletter"
-                id="input-example-1"
+                id="email"
               />
-              <button class="btn btn-primary input-group-btn">Subscribe</button>
+              <input type="submit" value="Subscribe" class="btn btn-primary input-group-btn">
+              </div>
+              </form>
             </div>
           </div>
         </div>

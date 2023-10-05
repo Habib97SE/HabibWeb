@@ -1,6 +1,6 @@
 {{> header}}
 
- <main>
+<main>
       <div class="container main-section">
         <div class="columns">
           <!-- Main Content Area -->
@@ -8,7 +8,7 @@
             <!-- Row 1: Blog posts by Author -->
             <div class="columns">
               <div class="column col-12">
-                <h4>Blog posts by Author</h4>
+                <h4>Overview of my projects</h4>
                 <p>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   Voluptates, quibusdam. Lorem ipsum dolor sit amet consectetur
@@ -16,8 +16,8 @@
                 </p>
               </div>
               <!-- Card 1 -->
-              {{#if main.posts}}
-                {{#each main.posts}}
+              {{#if main.projects}}
+                {{#each main.projects}}
               <div class="column col-4 col-md-6 col-sm-12">
                     <div class="card">
                   <div class="card-image img-fit-cover">
@@ -29,15 +29,11 @@
                   </div>
                   <div class="card-header">
                     <h4>{{this.title}}</h4>
-                    <p>{{firstTwentyWords this.content}}</p>
+                    <p>{{firstTwentyWords this.description}}</p>
                   </div>
                   <div class="divider"></div>
                   <div class="card-footer">
-                    <a class="btn btn-primary" href="/blog/{{this.blog_id}}">Read More</a>
-                    <div>
-                        <span class="label ">Published on {{this.created_at}}</span>
-                    <span class="label mx-2 my-2">By {{this.full_name}}</span>
-                    </div>
+                    <a class="btn btn-primary" href="/projects/{{this.project_id}}">Read More</a>
                   </div>
                 </div>
               </div>
@@ -45,10 +41,9 @@
                 {{else}}
               <div class="column col-12">
                     <div class="toast toast-danger">
-                        <p>No posts were found</p>
+                        <p>No projects were found</p>
                     </div>
               </div>
-              
                 {{/if}}
               
               <div class="column col-10 col-mx-auto my-2">

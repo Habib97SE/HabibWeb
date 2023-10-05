@@ -8,7 +8,7 @@
             I'm a full-stack web developer. I love to build web applications
             using the latest technologies.
           </p>
-          <a href="/portfolio" class="btn btn-success">Portfolio</a>
+          <a href="/projects" class="btn btn-success">Projects</a>
           <a href="/contact" class="btn btn-primary">Contact me</a>
         </div>
       </div>
@@ -42,8 +42,8 @@
                 <p>
                   I usually write about web development, programming, and other
                   related topics.
-                   {{#if main.guestPosts.length}}
-                  <a href="#" style="float: right; padding-right: 30px"
+                   {{#if main.blogPosts.length}}
+                  <a href="/blog" style="float: right; padding-right: 30px"
                     >View all</a
                   >
                   {{/if}}
@@ -125,19 +125,19 @@
             <!-- Row 3: Portfolio -->
             <div class="columns">
               <div class="column col-12">
-                <h4>Portfolio</h4>
+                <h4>Projects</h4>
                 <p>
                   My last three projects are listed here.
-                   {{#if main.guestPosts.length}}
-                  <a href="#" style="float: right; padding-right: 30px"
+                   {{#if main.projects.length}}
+                  <a href="/projects" style="float: right; padding-right: 30px"
                     >View all</a
                   >
                   {{/if}}
                 </p>
               </div>
               <!-- Project Card -->
-              {{#if main.portfolio.length}}
-              {{#each main.portfolio}}
+              {{#if main.projects.length}}
+              {{#each main.projects}}
               <div class="column col-4 col-sm-12">
                 <div class="card">
                   <div class="card-image">
@@ -152,7 +152,7 @@
                     <p>{{description}}</p>
                   </div>
                   <div class="card-footer">
-                    <a href="/portfolio/{{portfolio_id}}" class="btn btn-primary"
+                    <a href="/projects/{{project_id}}" class="btn btn-primary"
                       >Read More</a>
                   </div>
                 </div>

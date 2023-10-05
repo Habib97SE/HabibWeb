@@ -1,0 +1,29 @@
+{{> header}}
+
+<main class="container">
+      <div class="columns">
+        <article class="column col-8 col-md-12 col-mx-auto my-2">
+        <div class="card s-rounded">
+          <div class="card-header">
+            <h1>{{main.project.title}}</h1>
+          </div>
+          <div class="card-image">
+            <img
+              src="{{main.project.main_image}}"
+              alt="{{main.project.title}}"
+              class="img-responsive"
+            />
+          </div>
+          <div class="divider"></div>
+          <div class="card-body">
+            <p>{{main.project.description}}</p>
+          </div>
+          <div class="divider"></div>
+          <div class="card-footer">
+          </div>
+        </div>
+      </article>
+      </div>
+    </main>
+
+{{> footer}}
