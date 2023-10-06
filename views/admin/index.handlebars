@@ -1,22 +1,64 @@
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="{{{header.description}}}" />
-    <meta name="keywords" content="{{{header.keywords}}}" />
-
-    <title>{{header.title}}</title>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/spectre.css/dist/spectre.min.css"
-    />
-
-    <link rel="stylesheet" href="/css/admin.css" />
-  </head>
-  <body>
-
-    {{user}}
-
-  </body>
-</html>
+{{> admin_header}}
+    <main class="container">
+      <div class="row col-10 col-mx-auto">
+        
+        <div class="columns col-12">
+          {{> admin_sidebar}}
+          <div class="column col-9">
+            <div class="card">
+              <div class="card-header">
+                <h2>Blog</h2>
+              </div>
+              <div class="divider"></div>
+              <div class="card-body">
+                <ul>
+                  <li>Posts: {{blog.posts}}</li>
+                  <li>Comments: {{blog.comments}}</li>
+                  <li>Categories: {{blog.categories}}</li>
+                  <li>Tags: {{blog.tags}}</li>
+                </ul>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <h2>Guest Blog</h2>
+              </div>
+              <div class="divider"></div>
+              <div class="card-body">
+                <ul>
+                  <li>Posts: {{guestblog.posts}}</li>
+                  <li>Comments: {{guestblog.comments}}</li>
+                  <li>Categories: {{guestblog.categories}}</li>
+                  <li>Tags: {{guestblog.tags}}</li>
+                </ul>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <h2>Projects</h2>
+              </div>
+              <div class="divider"></div>
+              <div class="card-body">
+                <ul>
+                  <li>Projects: {{projects.projects}}</li>
+                  <li>Categories: {{projects.categories}}</li>
+                  <li>Tags: {{projects.tags}}</li>
+                </ul>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <h2>Users</h2>
+              </div>
+              <div class="divider"></div>
+              <div class="card-body">
+                <ul>
+                  <li>Users: {{users.users}}</li>
+                  <li>Roles: {{users.roles}}</li>
+                </ul>
+              </div>
+            </div>
+        </div>
+      </div>
+    </main>
+{{> admin_footer}}
