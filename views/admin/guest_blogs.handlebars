@@ -6,8 +6,9 @@
             {{> admin_sidebar}}
             <div class="column col-9">
                 <div class="col-12">
-                    <h1 style="display: inline-block;">Blogs</h1>
-                    <a style="display: inline-block;" href="/admin/blogs/new" class="btn btn-primary">Add Blog</a>
+                    <h1 style="display: inline-block;">Guest posts</h1>
+                    <a style="display: inline-block;" href="/admin/guest-blogs/new" class="btn btn-primary">Add new
+                        post</a>
                 </div>
                 {{#if blogs}}
                     {{#each blogs}}
@@ -26,9 +27,12 @@
                             <div class="divider"></div>
                             <div class="card-footer">
                                 <div class="col-6">
-                                    <a href="/admin/blogs/edit/{{blog_id}}" class="btn btn-primary">Edit</a>
-                                    <a href="/admin/blogs/delete/{{blog_id}}" class="btn btn-error">Delete</a>
-                                    <a href="/admin/blogs/{{blog_id}}" class="btn btn-primary">Read more</a>
+                                    <a href="/admin/guest-blogs/edit/{{guest_post_id}}" class="btn btn-primary">Edit</a>
+                                    <a href="/admin/guest-blogs/delete/{{guest_post_id}}" class="btn btn-error">Delete</a>
+                                    <a href="/admin/guest-blogs/{{guest_post_id}}" class="btn btn-primary">Read more</a>
+                                    <span class="label">
+                                        {{author_first_name}} {{author_last_name}}
+                                    </span>
                                 </div>
                                 <span class="label">
                                     Published on {{created_at}}
@@ -42,18 +46,14 @@
                     {{/each}}
                 {{else}}
                     <div class="empty">
-                        <p class="empty-title h5">No blogs found.</p>
-                        <p class="empty-subtitle">You can add a new blog by clicking the button below.</p>
-                        <div class="empty-action">
-                            <a href="/admin/blogs/new" class="btn btn-primary">Add Blog</a>
-                        </div>
+                        <p class="empty-title h5">No guest blogs found.</p>
                     </div>
                 {{/if}}
                 {{#if hasMultiplePages }}
                     <div class="col-12 pagination">
-                        <span class="label"><a href="/admin/blogs/page/{{prev}}">Prev</a></span>
+                        <span class="label"><a href="/admin/guest-blogs/page/{{prev}}">Prev</a></span>
                         <span class="label">Page {{currentPage}} of {{totalPages}}</span>
-                        <span class="label"><a href="/admin/blogs/page/{{next}}">Next</a></span>
+                        <span class="label"><a href="/admin/guest-blogs/page/{{next}}">Next</a></span>
                     </div>
                 {{/if}}
             </div>
