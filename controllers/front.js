@@ -145,9 +145,7 @@ router.get("/blog", async (req, res) => {
     main: {
       posts: posts ? posts : [],
       prev: parseInt(page) - 1 > 0 ? parseInt(page) - 1 : 1,
-
       next: parseInt(page) + 1 <= totalPages ? parseInt(page) + 1 : page,
-
       current: page,
       totalPages: totalPages,
     },

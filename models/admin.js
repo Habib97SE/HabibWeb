@@ -355,3 +355,50 @@ module.exports.addProject = (project) =>
         );
     }); // end new Promise()
 }
+
+module.exports.getSettings = () => {
+    return new Promise((resolve, reject) => {
+        db.all("SELECT * FROM Settings", (err, rows) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(rows);
+        }); // end db.all()
+    }); // end new Promise()
+} // end getSettings()
+
+module.exports.updateSetting = (setting_name, setting_value) => {
+    return new Promise((resolve, reject) => {
+        db.run(
+            "UPDATE Settings SET setting_value = ? WHERE setting_name = ?",
+            [setting_value, setting_name],
+            (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(true);
+                }
+            }
+        );
+    });
+};
+
+
+module.exports.addSetting = (setting) =>
+{
+    return new Promise((resolve, reject) =>
+    {
+        db.run(
+            "INSERT INTO Settings (setting_name, setting_value) VALUES (?, ?)",
+            [setting.setting_name, setting.setting_value],
+            (err) =>
+            {
+                if (err)
+                {
+                    reject(err);
+                }
+                resolve(true);
+            }
+        );
+    }); // end new Promise()
+} // end addSetting()

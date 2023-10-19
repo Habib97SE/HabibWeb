@@ -5,6 +5,7 @@ const model = require("../models/admin.js");
 const formidable = require("formidable");
 const fs = require("fs");
 const path = require("path");
+const {updateSetting} = require("../models/admin");
 
 router.get("/admin", async (req, res) =>
 {
@@ -179,8 +180,13 @@ router.post("/admin/profile", async (req, res) =>
  */
 router.get("/admin/blogs", async (req, res) =>
 {
+    let page = req.query.page ? req.query.page : 1;
     let limit = 3;
-    let offset = 0;
+    let offset = (page - 1) * limit;
+    let posts = await model.getBlogs(limit, offset);
+    let totalPosts = await model.countRows("Blogs");
+    totalPosts = totalPosts.length;
+    let totalPages = totalPosts / limit;
     // check if cookie is set
     if (req.session && req.session.user)
     {
@@ -193,11 +199,11 @@ router.get("/admin/blogs", async (req, res) =>
             },
             user: req.session.user,
             blogs: await model.getBlogs(limit, offset),
-            hasMultiplePages: true,
-            prev: 1,
-            next: 3,
-            currentPage: 2,
-            totalPages: 5,
+            hasMultiplePages: totalPages > 1,
+            prev: parseInt(page) - 1 > 0 ? parseInt(page) - 1 : 1,
+            next: parseInt(page) + 1 <= totalPages ? parseInt(page) + 1 : totalPages,
+            currentPage: page,
+            totalPages: totalPages,
             footer: {
                 year: new Date().getFullYear(),
                 site: {
@@ -380,7 +386,6 @@ router.post("/admin/blogs/edit/:id", async (req, res) =>
 
             image_path = newpath;
         });
-        console.dir(req.session.user);
         const id = req.params.id;
         const title = fields.title[0];
         const content = fields.content[0];
@@ -1235,71 +1240,239 @@ router.post("/admin/projects/new", async (req, res) =>
                 });
                 return;
             }
-            const title = fields.title[0].trim();
-            const description = fields.description[0].trim();
-            if (title === "" || description === "")
-            {
-                res.redirect("/admin/projects/new", {
-                    layout: false,
-                    header: {
-                        title: "Add Project",
-                        keywords: "add, project, admin",
-                        description: "Add project",
-                    },
-                    action: "/admin/projects/new",
-                    user: req.session.user,
-                    errors: ["Something went wrong, try again"],
-                    project: {
-                        title: fields.title[0],
-                        description: fields.description[0]
-                    },
-                    errors: ["The field title and/or description cannot be left empty."],
-                    footer: {
-                        year: new Date().getFullYear(),
-                        site: {
-                            name: "HabibDev.",
-                            url: "/",
-                        }
-                    }
-                }); // end res.redirect()
-            }
-            const project = {
-                title: title,
-                description: description,
-                main_image: filePath,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-            }
-            const result = await model.addProject(project);
-            if (result)
-            {
-                res.redirect("/admin/projects");
-            } else {
-                res.redirect("/admin/projects/new", {
-                    layout: false,
-                    header: {
-                        title: "Add Project",
-                        keywords: "add, project, admin",
-                        description: "Add project",
-                    },
-                    action: "/admin/projects/new",
-                    user: req.session.user,
-                    errors: ["Something went wrong, try again"],
-                    project: {
-                        title: fields.title[0],
-                        description: fields.description[0]
-                    },
-                    footer: {
-                        year: new Date().getFullYear(),
-                        site: {
-                            name: "HabibDev.",
-                            url: "/",
-                        }
-                    }
-                })
-            }
         }); // end fs.rename()
+        const title = fields.title[0].trim();
+        const description = fields.description[0].trim();
+        if (title === "" || description === "")
+        {
+            res.redirect("/admin/projects/new", {
+                layout: false,
+                header: {
+                    title: "Add Project",
+                    keywords: "add, project, admin",
+                    description: "Add project",
+                },
+                action: "/admin/projects/new",
+                user: req.session.user,
+                errors: ["Something went wrong, try again"],
+                project: {
+                    title: fields.title[0],
+                    description: fields.description[0]
+                },
+                errors: ["The field title and/or description cannot be left empty."],
+                footer: {
+                    year: new Date().getFullYear(),
+                    site: {
+                        name: "HabibDev.",
+                        url: "/",
+                    }
+                }
+            }); // end res.redirect()
+        }
+        const project = {
+            title: title,
+            description: description,
+            main_image: filePath,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        }
+        const result = await model.addProject(project);
+        if (result)
+        {
+            res.redirect("/admin/projects");
+        } else
+        {
+            res.redirect("/admin/projects/new", {
+                layout: false,
+                header: {
+                    title: "Add Project",
+                    keywords: "add, project, admin",
+                    description: "Add project",
+                },
+                action: "/admin/projects/new",
+                user: req.session.user,
+                errors: ["Something went wrong, try again"],
+                project: {
+                    title: fields.title[0],
+                    description: fields.description[0]
+                },
+                footer: {
+                    year: new Date().getFullYear(),
+                    site: {
+                        name: "HabibDev.",
+                        url: "/",
+                    }
+                }
+            })
+        }
     }); // end form.parse()
 }); // end router.post()
+
+router.get("/admin/settings", async (req, res) =>
+{
+    if (!req.session && !req.session.user)
+    {
+        res.redirect("/admin/login");
+    }
+    const settings = await model.getSettings();
+
+    res.render("admin/settings.handlebars", {
+        layout: false,
+        header: {
+            title: "Settings",
+            keywords: "settings, admin",
+            description: "Settings",
+        },
+        settings: settings,
+        user: req.session.user,
+        error: req.query.error,
+        success: req.query.success,
+        empty: req.query.empty,
+        footer: {
+            year: new Date().getFullYear(),
+            site: {
+                name: "HabibDev.",
+                url: "/",
+            }
+        }
+    });
+}); // end router.get()
+
+router.post("/admin/settings", async (req, res) =>
+{
+    if (!req.session && !req.session.user)
+    {
+        res.redirect("/admin/login");
+    }
+
+    const form = new formidable.IncomingForm();
+    form.parse(req, async (err, fields, files) =>
+    {
+        let numberOfFields = Object.keys(fields).length;
+        let settings = {};
+        for (let i = 0; i < numberOfFields; i++)
+        {
+            if (Object.values(fields)[i] === "")
+            {
+                res.redirect("/admin/settings?empty=true");
+            }
+            settings = Object.entries(fields).map(([key, value]) => ({ [key]: value }));
+        }
+        let result = true;
+        settings.forEach(async (obj) => {
+            const key = Object.keys(obj)[0];
+            const value = obj[key];
+            try {
+                await updateSetting(key, value[0]);
+            } catch (error) {
+                result = false;
+                console.error(`Failed to insert setting: ${key}. Error: ${error.message}`);
+            }
+        });
+        if (result)
+        {
+            res.redirect("/admin/settings?success=true");
+        } else
+        {
+            res.redirect("/admin/settings?error=true");
+        }
+    }) // end form.parse()
+
+});
+
+router.get("/admin/settings/new", async (req, res) =>
+{
+    if (!req.session && !req.session.user)
+    {
+        res.redirect("/admin/login");
+    }
+    res.render("admin/new_settings.handlebars", {
+        layout: false,
+        header: {
+            title: "Settings",
+            keywords: "settings, admin",
+            description: "Settings",
+        },
+        settings: {},
+        user: req.session.user,
+        footer: {
+            year: new Date().getFullYear(),
+            site: {
+                name: "HabibDev.",
+                url: "/",
+            }
+        }
+    });
+}); // end router.get()
+
+router.post("/admin/settings/new", async (req, res) =>
+{
+    if (!req.session && !req.session.user)
+    {
+        res.redirect("/admin/login");
+    }
+    const form = new formidable.IncomingForm();
+    form.parse(req, async (err, fields, files) =>
+    {
+        if (err)
+        {
+            console.error("Error parsing the form:", err);
+            return;
+        }
+
+        // check if setting_name and setting_value are not empty
+        if (fields.setting_name[0].trim() === "" || fields.setting_value[0].trim() === "")
+        {
+            res.redirect("/admin/settings/new", {
+                layout: false,
+                header: {
+                    title: "Add new settings",
+                    keywords: "settings, admin",
+                    description: "Settings",
+                },
+                user: req.session.user,
+                errors: ["Setting name and value are required."],
+                footer: {
+                    year: new Date().getFullYear(),
+                    site: {
+                        name: "HabibDev.",
+                        url: "/",
+                    }
+                }
+            }) // end res.redirect()
+        }
+
+        let setting = {};
+
+        setting["setting_name"] = fields.setting_name[0];
+        setting["setting_value"] = fields.setting_value[0];
+
+        const result = await model.addSetting(setting);
+        if (result)
+        {
+            res.redirect("/admin/settings");
+        } else
+        {
+            res.redirect("/admin/settings/new", {
+                layout: false,
+                header: {
+                    title: "Settings",
+                    keywords: "settings, admin",
+                    description: "Settings",
+                },
+                settings: settings,
+                user: req.session.user,
+                errors: ["Something went wrong, try again."],
+                footer: {
+                    year: new Date().getFullYear(),
+                    site: {
+                        name: "HabibDev.",
+                        url: "/",
+                    },
+                },
+            });
+        }
+    }) // end form.parse()
+});
 
 module.exports = router;
