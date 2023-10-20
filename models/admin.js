@@ -263,21 +263,25 @@ module.exports.addGuestBlog = (guest_post) =>
 
 module.exports.getProjects = (limit, offset) =>
 {
-    return new Promise((resolve, reject) =>
-    {
-        db.all(
-            "SELECT * FROM Projects LIMIT ? OFFSET ?",
-            [limit, offset],
-            (err, rows) =>
-            {
-                if (err)
-                {
-                    reject(err);
-                }
-                resolve(rows);
+    return new Promise((resolve, reject) => { // return a new Promise
+        db.all("SELECT  * FROM Projects ORDER BY created_at DESC LIMIT ? OFFSET ?", [limit, offset], (err, rows) => {
+            if (err) {
+                // reject the promise if there is an error
+                reject({
+                    hasError: true,
+                    error: err,
+                    projects: [],
+                });
+            } else {
+                // resolve the promise with the data if successful
+                resolve({
+                    hasError: false,
+                    error: null,
+                    projects: rows,
+                });
             }
-        );
-    }); // end new Promise()
+        });
+    });
 } // end getProjects()
 
 module.exports.getProject = (projectId) =>
@@ -291,9 +295,17 @@ module.exports.getProject = (projectId) =>
             {
                 if (err)
                 {
-                    reject(err);
+                    reject({
+                        hasError: true,
+                        error: err,
+                        project: {},
+                    });
                 }
-                resolve(row);
+                resolve({
+                    hasError: false,
+                    error: null,
+                    project: row,
+                });
             }
         );
     }); // end new Promise()
@@ -323,8 +335,8 @@ module.exports.updateProject = (project) =>
     return new Promise((resolve, reject) =>
     {
         db.run(
-            "UPDATE Projects SET title = ?, description = ?, main_image = ?, updated_at = ? WHERE project_id = ?",
-            [project.title, project.description, project.main_image, project.updated_at, project.project_id],
+            "UPDATE Projects SET title = ?, content = ?, main_image = ?, updated_at = ? WHERE project_id = ?",
+            [project.title, project.content, project.main_image, project.updated_at, project.project_id],
             (err) =>
             {
                 if (err)

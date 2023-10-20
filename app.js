@@ -4,6 +4,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const sqlite3 = require("sqlite3");
 const path = require("path");
+const bcrypt = require("bcrypt");
 
 const frontController = require("./controllers/front");
 const adminController = require("./controllers/admin");
@@ -32,14 +33,15 @@ const hbs = exphbs.create({
   },
 });
 
-app.use(
-  session({
-    secret: "your_secret_key",
+// configure the session and cookie parser
+app.use(session({
+    secret: bcrypt.genSaltSync(10),
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false },
-  })
-);
+    saveUninitialized: true
+}));
+app.use(cookieParser());
+
+
 
 // configure the template engine
 app.engine("handlebars", hbs.engine);
@@ -50,9 +52,21 @@ app.set("views", path.join(__dirname, "views"));
 // configure the static folder
 app.use(express.static("public"));
 
+
 app.use(frontController);
 app.use(adminController);
+
+// Default 404 page
+app.use((req, res, next) => {
+  res.status(404).send("<h1>404 Page Not Found</h1><p>The page you are looking for does not exist.</p>");
+})
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
+
+
+
+
+
+

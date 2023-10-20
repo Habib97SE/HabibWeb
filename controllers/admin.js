@@ -907,16 +907,57 @@ router.post("/admin/guest-blogs/new", async (req, res) =>
     }); // end form.parse()
 }); // end router.post()
 
-router.get("/admin/projects", async (req, res) =>
+router.get("/admin/projects/new", async (req, res) =>
 {
-    if (!req.session && !req.session.user)
+    
+
+    if (!req.session || !req.session.user)
     {
-        res.redirect("/admin/login");
+        return res.redirect("/admin/login");
+    } 
+    const error = req.session.errorMessage ? req.session.errorMessage : null;
+    delete req.session.errorMessage;
+    res.render("admin/new_project.handlebars", {
+        header : {
+            title : "New Project",
+            keywords : "new, project, admin",
+            description : "New project",
+        },
+        layout : false,
+        action : "/admin/projects/new",
+        error : error,
+        submitButtonText : "Add New Project",
+        user : req.session.user,
+        footer : {
+            year : new Date().getFullYear(),
+            site : {
+                name : "HabibDev.",
+                url : "/",
+            }
+        }
+    });
+});
+
+router.get("/admin/projects", async (req, res) => {
+    if (!req.session || !req.session.user) {
+        return res.redirect("/admin/login");
     }
+
+    // Use query parameter to determine the current page, default to 1 if not provided
+    let currentPage = parseInt(req.query.page) || 1;
+    
     let limit = 3;
-    let offset = 0;
+    let offset = (currentPage - 1) * limit; // Calculate the correct offset based on the current page
     let totalRows = await model.countRows("Projects");
-    let totalPages = parseInt(totalRows / limit) + 1;
+    totalRows = totalRows['count'];
+    let totalPages = Math.ceil(totalRows / limit); // Use Math.ceil to ensure you have enough pages for all items
+
+    // Calculate next and previous page numbers, ensuring they stay within valid range
+    let nextPage = currentPage < totalPages ? currentPage + 1 : null;
+    let prevPage = currentPage > 1 ? currentPage - 1 : null;
+    let projects = await model.getProjects(limit, offset);
+
+
     res.render("admin/projects.handlebars", {
         layout: false,
         header: {
@@ -925,11 +966,11 @@ router.get("/admin/projects", async (req, res) =>
             description: "Projects",
         },
         user: req.session.user,
-        projects: await model.getProjects(limit, offset),
-        hasMultiplePages: true,
-        prev: 1,
-        next: 2,
-        currentPage: 1,
+        model: projects,
+        hasMultiplePages: totalPages > 1, 
+        prev: prevPage, 
+        next: nextPage, 
+        currentPage: currentPage,
         totalPages: totalPages,
         footer: {
             year: new Date().getFullYear(),
@@ -941,43 +982,11 @@ router.get("/admin/projects", async (req, res) =>
     }); // end res.render()
 }); // end router.get()
 
-router.get("/admin/projects/page/:page", async (req, res) =>
-{
-    if (!req.session && !req.session.user)
-    {
-        res.redirect("/admin/login");
-    }
-    let limit = 3;
-    let offset = (req.params.page - 1) * limit;
-    let totalRows = await model.countRows("Projects");
-    let totalPages = parseInt(totalRows / limit) + 1;
-    res.render("admin/projects.handlebars", {
-        layout: false,
-        header: {
-            title: "Projects",
-            keywords: "projects, admin",
-            description: "Projects",
-        },
-        user: req.session.user,
-        projects: await model.getProjects(limit, offset),
-        hasMultiplePages: true,
-        prev: req.params.page - 1,
-        next: parseInt(req.params.page) + 1,
-        currentPage: req.params.page,
-        totalPages: totalPages,
-        footer: {
-            year: new Date().getFullYear(),
-            site: {
-                name: "HabibDev.",
-                url: "/",
-            }
-        }
-    }); // end res.render()
-});
+
 
 router.get("/admin/projects/:id", async (req, res) =>
 {
-    if (!req.session && !req.session.user)
+    if (!req.session || !req.session.user)
     {
         res.redirect("/admin/login");
     }
@@ -993,7 +1002,7 @@ router.get("/admin/projects/:id", async (req, res) =>
                 description: "Project",
             },
             user: req.session.user,
-            project: result,
+            model: result,
             footer: {
                 year: new Date().getFullYear(),
                 site: {
@@ -1010,7 +1019,7 @@ router.get("/admin/projects/:id", async (req, res) =>
 
 router.get("/admin/projects/delete/:id", async (req, res) =>
 {
-    if (!req.session && !req.session.user)
+    if (!req.session || !req.session.user)
     {
         res.redirect("/admin/login");
     }
@@ -1027,24 +1036,29 @@ router.get("/admin/projects/delete/:id", async (req, res) =>
 
 router.get("/admin/projects/edit/:id", async (req, res) =>
 {
-    if (!req.session && !req.session.user)
+    if (!req.session || !req.session.user)
     {
         res.redirect("/admin/login");
+        return;
     }
     const id = req.params.id;
     const result = await model.getProject(id);
+    const error = req.session.errorMessage ? req.session.errorMessage : null;
+    delete req.session.errorMessage;
+    console.dir(result);
     if (result)
     {
-        res.render("admin/project.handlebars", {
+        res.render("admin/edit_project.handlebars", {
             layout: false,
             header: {
-                title: "Edit Project",
+                title: "Edit the project: " + result.title,
                 keywords: "edit, project, admin",
                 description: "Edit project",
             },
             action: "/admin/projects/edit/" + id,
             user: req.session.user,
-            project: result,
+            model: result,
+            error: error,
             submitButtonText: "Update",
             footer: {
                 year: new Date().getFullYear(),
@@ -1057,61 +1071,59 @@ router.get("/admin/projects/edit/:id", async (req, res) =>
     } else
     {
         res.redirect("/admin/projects");
+        return;
     }
 }); // end router.get()
 
 router.post("/admin/projects/edit/:id", async (req, res) =>
 {
-    if (!req.session && !req.session.user)
+    
+    if (!req.session || !req.session.user)
     {
         res.redirect("/admin/login");
+        return;
     }
+    const project = await model.getProject(req.params.id);
     const form = new formidable.IncomingForm();
     form.parse(req, async (err, fields, files) =>
     {
         const id = req.params.id;
         if (err)
         {
-            redirect("/admin/projects/edit/" + id);
+             redirect("/admin/projects/edit/" + id);
+             return;
         }
-        let uploadedFile = files.image[0];
-        let oldpath = uploadedFile.filepath;
-        let newpath = path.join(__dirname, "../public/images/" + uploadedFile.originalFilename);
-        let filePath = "/images/" + uploadedFile.originalFilename;
-        fs.rename(oldpath, newpath, function (err)
+         // check if user has chosen an image to upload 
+         let filePath = project.main_image;
+        if (files.image && files.image[0].size > 0)
         {
-            if (err)
+            let uploadedFile = files.image[0];
+            let oldpath = uploadedFile.filepath;
+            let newpath = path.join(__dirname, "../public/images/" + uploadedFile.originalFilename);
+            filePath =  "/images/" + uploadedFile.originalFilename; 
+            fs.rename(oldpath, newpath, function (err)
             {
-                res.redirect("/admin/projects/edit/" + id);
-                return;
-            }
-        }); // end fs.rename()
+                if (err)
+                {
+                    req.session.errorMessage = "Failed to upload image.";
+                    res.redirect("/admin/projects/edit/" + id);
+                    return;
+                }
+            }); // end fs.rename() 
+        }
+        
+
+        
         const title = fields.title[0].trim();
         const content = fields.content[0].trim();
+        
         if (title === "" || content === "")
         {
-            res.redirect("/admin/projects/edit/" + id, {
-                layout: false,
-                header: {
-                    title: "Edit Project",
-                    keywords: "edit, project, admin",
-                    description: "Edit project",
-                },
-                action: "/admin/projects/edit/" + id,
-                submitButtonText: "Update",
-                user: req.session.user,
-                errors: ["Title and content are required."],
-                footer: {
-                    year: new Date().getFullYear(),
-                    site: {
-                        name: "HabibDev.",
-                        url: "/",
-                    }
-                }
-            });
+            req.session.errorMessage = "Title and content are required.";
+            res.redirect("/admin/projects/edit/" + id, {});
             return;
         }
-        const project = {
+        const editedProject = {
             project_id: id,
             title: title,
             content: content,
@@ -1119,94 +1131,34 @@ router.post("/admin/projects/edit/:id", async (req, res) =>
             updated_at: new Date().toISOString()
         }
         const result = await model.updateProject(project);
+        // if project updated successfully
         if (result)
         {
             res.redirect("/admin/projects");
         } else
         {
-            res.redirect("/admin/projects/edit/" + id, {
-                layout: false,
-                header: {
-                    title: "Edit Project",
-                    keywords: "edit, project, admin",
-                    description: "Edit project",
-                },
-                action: "/admin/projects/edit/" + id,
-                submitButtonText: "Update",
-                user: req.session.user,
-                errors: ["Title and content are required."],
-                footer: {
-                    year: new Date().getFullYear(),
-                    site: {
-                        name: "HabibDev.",
-                        url: "/",
-                    }
-                }
-            });
+            req.session.errorMessage = "Something went wrong. Please try again.";
+            res.redirect("/admin/projects/edit/" + id, {});
+            return;
         }
     }); // end form.parse()
 }); // end router.post()
 
-router.get("/admin/projects/new", async (req, res) =>
-{
-    if (!req.session && !req.session.user)
-    {
-        res.redirect("/admin/login");
-    }
-    res.render("admin/project.handlebars", {
-        layout: false,
-        header: {
-            title: "Add Project",
-            keywords: "add, project, admin",
-            description: "Add project",
-        },
-        action: "/admin/projects/new",
-        submitButtonText: "Add New Project",
-        user: req.session.user,
-        footer: {
-            year: new Date().getFullYear(),
-            site: {
-                name: "HabibDev.",
-                url: "/",
-            }
-        }
-    }); // end res.render()
-});
+
 
 router.post("/admin/projects/new", async (req, res) =>
 {
-    if (!req.session && !req.session.user)
+    if (!req.session || !req.session.user)
     {
         res.redirect("/admin/login");
+        return;
     }
     const form = new formidable.IncomingForm();
     form.parse(req, async (err, fields, files) =>
     {
-        const id = req.params.id;
         if (err)
         {
-            res.redirect("/admin/projects/new", {
-                layout: false,
-                header: {
-                    title: "Add Project",
-                    keywords: "add, project, admin",
-                    description: "Add project",
-                },
-                action: "/admin/projects/new",
-                user: req.session.user,
-                errors: ["Something went wrong, try again"],
-                project: {
-                    title: fields.title[0],
-                    description: fields.description[0]
-                },
-                footer: {
-                    year: new Date().getFullYear(),
-                    site: {
-                        name: "HabibDev.",
-                        url: "/",
-                    }
-                }
-            });
+            res.redirect("/admin/projects/new");
         }
         let uploadedFile = files.image[0];
         let oldpath = uploadedFile.filepath;
@@ -1216,62 +1168,22 @@ router.post("/admin/projects/new", async (req, res) =>
         {
             if (err)
             {
-                res.redirect("/admin/projects/new", {
-                    layout: false,
-                    header: {
-                        title: "Add Project",
-                        keywords: "add, project, admin",
-                        description: "Add project",
-                    },
-                    action: "/admin/projects/new",
-                    user: req.session.user,
-                    errors: ["Something went wrong, try again"],
-                    project: {
-                        title: fields.title[0],
-                        description: fields.description[0]
-                    },
-                    footer: {
-                        year: new Date().getFullYear(),
-                        site: {
-                            name: "HabibDev.",
-                            url: "/",
-                        }
-                    }
-                });
+                req.session.errorMessage = "Failed to upload image.";
+                res.redirect("/admin/projects/new", {});
                 return;
             }
         }); // end fs.rename()
         const title = fields.title[0].trim();
-        const description = fields.description[0].trim();
-        if (title === "" || description === "")
+        const content = fields.content[0].trim();
+        if (title === "" || content === "")
         {
-            res.redirect("/admin/projects/new", {
-                layout: false,
-                header: {
-                    title: "Add Project",
-                    keywords: "add, project, admin",
-                    description: "Add project",
-                },
-                action: "/admin/projects/new",
-                user: req.session.user,
-                errors: ["Something went wrong, try again"],
-                project: {
-                    title: fields.title[0],
-                    description: fields.description[0]
-                },
-                errors: ["The field title and/or description cannot be left empty."],
-                footer: {
-                    year: new Date().getFullYear(),
-                    site: {
-                        name: "HabibDev.",
-                        url: "/",
-                    }
-                }
-            }); // end res.redirect()
+            req.session.errorMessage = "Title and content are required.";
+            res.redirect("/admin/projects/new", {}); // end res.redirect()
+            return;
         }
         const project = {
             title: title,
-            description: description,
+            content: content,
             main_image: filePath,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
@@ -1280,30 +1192,12 @@ router.post("/admin/projects/new", async (req, res) =>
         if (result)
         {
             res.redirect("/admin/projects");
+            return;
         } else
         {
-            res.redirect("/admin/projects/new", {
-                layout: false,
-                header: {
-                    title: "Add Project",
-                    keywords: "add, project, admin",
-                    description: "Add project",
-                },
-                action: "/admin/projects/new",
-                user: req.session.user,
-                errors: ["Something went wrong, try again"],
-                project: {
-                    title: fields.title[0],
-                    description: fields.description[0]
-                },
-                footer: {
-                    year: new Date().getFullYear(),
-                    site: {
-                        name: "HabibDev.",
-                        url: "/",
-                    }
-                }
-            })
+            req.session.errorMessage = "Something went wrong. Please try again.";
+            res.redirect("/admin/projects/new", {});
+            return;
         }
     }); // end form.parse()
 }); // end router.post()
@@ -1473,6 +1367,16 @@ router.post("/admin/settings/new", async (req, res) =>
             });
         }
     }) // end form.parse()
+});
+
+
+router.get("/admin/logout", async (req, res) => {
+    if (!req.session || !req.session.user) 
+    {
+        return res.redirect("/admin/login");
+    } 
+    req.session.destroy();
+    res.redirect("/admin/login");
 });
 
 module.exports = router;
