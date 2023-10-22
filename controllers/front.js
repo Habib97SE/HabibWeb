@@ -1,5 +1,6 @@
 const express = require("express");
 const model = require("../models/front.js");
+const bcrypt = require("bcrypt");
 const {
   parse
 } = require("handlebars");
@@ -33,6 +34,7 @@ router.get("/", async (req, res) => {
       description: "This is the home page",
     },
     main: {
+      user: req.session.user ? req.session.user : null,
       address: address ? address[0].setting_value : "",
       blogPosts: blogPosts ? blogPosts : [],
       linkedin: linkedinLink ? linkedinLink[0].setting_value : "",
@@ -57,6 +59,7 @@ router.get("/about", async (req, res) => {
       description: "This is page is about me and my skills",
     },
     main: {
+      user: req.session.user ? req.session.user : null,
       text: `
       <div class="col-6 col-mx-auto my-2">
        <img width = "500px"
@@ -107,6 +110,7 @@ const createContactObject = () => {
       description: "This is the contact page",
     },
     main: {
+      user: req.session.user ? req.session.user : null,
       text: "This is the contact page",
     },
     footer: {
@@ -179,6 +183,7 @@ router.get("/blog", async (req, res) => {
       description: "This is the blog page",
     },
     main: {
+      user: req.session.user ? req.session.user : null,
       posts: posts ? posts : [],
       hasMultiplePages: totalPages > 1,
       prev: prevPagee,
@@ -204,6 +209,7 @@ router.get("/blog/:blog_id", async (req, res) => {
       description: "This is the blog page",
     },
     main: {
+      user: req.session.user ? req.session.user : null,
       post: post ? post[0] : {},
     },
     footer: {
@@ -228,6 +234,7 @@ router.get("/projects", async (req, res) => {
       description: "This is the projects page",
     },
     main: {
+      user: req.session.user ? req.session.user : null,
       projects: projects ? projects : [],
       prev: parseInt(page) - 1 > 0 ? parseInt(page) - 1 : 1,
       next: parseInt(page) + 1 <= totalPages ? parseInt(page) + 1 : page,
@@ -255,6 +262,7 @@ router.get("/projects/page/:page", async (req, res) => {
       description: "This is the projects page",
     },
     main: {
+      user: req.session.user ? req.session.user : null,
       projects: projects ? projects : [],
       prev: parseInt(page) - 1 > 0 ? parseInt(page) - 1 : 1,
       next: parseInt(page) + 1 <= totalPages ? parseInt(page) + 1 : page,
@@ -278,6 +286,7 @@ router.get("/projects/:project_id", async (req, res) => {
       description: "This is the project page",
     },
     main: {
+      user: req.session.user ? req.session.user : null,
       project: project ? project[0] : {},
     },
     footer: {
@@ -345,6 +354,7 @@ router.get("/guest-blogs", async (req, res) => {
       description: "This is the guest blog page",
     },
     main: {
+      user: req.session.user ? req.session.user : null,
       guestPosts: guestPosts ? guestPosts : [],
       hasMultiplePages: totalPages > 1,
       prev: prevPage,
@@ -370,6 +380,7 @@ router.get("/guest-blogs/:guest_post_id", async (req, res) => {
       description: "This is the guest post page",
     },
     main: {
+      user: req.session.user ? req.session.user : null,
       post: guestPost ? guestPost[0] : {},
     },
     footer: {
@@ -377,5 +388,173 @@ router.get("/guest-blogs/:guest_post_id", async (req, res) => {
     },
   });
 });
+
+router.get("/login", (req, res) => {
+  if (req.session.user) {
+    res.redirect("/");
+    return;
+  }
+  const error = req.session.errorMessage ? req.session.errorMessage : null;
+  delete req.session.errorMessage;
+  res.render("login.handlebars", {
+    layout: false,
+    header: {
+      title: "Login page",
+      keywords: "HabibDev., Portfolio",
+      description: "This is the login page",
+    },
+    main: {
+      user: req.session.user ? req.session.user : null,
+      error: error,
+      text: "This is the login page",
+    },
+    footer: {
+      text: `<p>HabibDev. All right reseved ${new Date().getFullYear()}</p>`,
+    },
+
+  })
+})
+
+router.post("/login", (req, res) => {
+  if (req.session.user) {
+    res.redirect("/");
+    return;
+  }
+  const email_address = req.body.email;
+  const password = req.body.password;
+
+
+
+  if (email_address == "" || password == "") {
+    req.session.errorMessage = "Please fill in all the fields";
+    res.redirect("/login");
+    return;
+  }
+
+  if (password.length < 8) {
+    req.session.errorMessage = "Password must be at least 8 characters";
+    res.redirect("/login");
+    return;
+  }
+
+
+  model.getUserByEmail(email_address).then((result) => {
+    console.dir(result);
+    if (result.hasError) {
+      req.session.errorMessage = "Something went wrong, please try again";
+      res.redirect("/login");
+      return;
+    }
+    if (result.user.length == 0) {
+      req.session.errorMessage = "The email address or password is incorrect";
+      res.redirect("/login");
+      return;
+    }
+    const user = result.user[0];
+    console.dir(user);
+    bcrypt.compare(password, user.password, (err, same) => {
+      if (err) {
+        req.session.errorMessage = "Something went wrong, please try again";
+        res.redirect("/login");
+        return;
+      }
+      if (!same) {
+        req.session.errorMessage = "The email address or password is incorrect";
+        res.redirect("/login");
+        return;
+      }
+      // remove password from user 
+      delete user.password;
+      req.session.user = user;
+      console.log("req.session.user");
+      console.dir(req.session.user);
+      res.redirect("/");
+      return;
+    })
+  })
+
+})
+
+router.get("/logout", (req, res) => {
+  if (req.session.user) {
+    delete req.session.user;
+  } else {
+    res.redirect("/");
+  }
+})
+
+router.get("/register", (req, res) => {
+  const error = req.session.errorMessage ? req.session.errorMessage : null;
+  delete req.session.errorMessage;
+  res.render("register.handlebars", {
+    layout: false,
+    header: {
+      title: "Register page",
+      keywords: "HabibDev., Portfolio",
+      description: "This is the register page",
+    },
+    main: {
+      user: req.session.user ? req.session.user : null,
+      error: error,
+      text: "This is the register page",
+    },
+    footer: {
+      text: `<p>HabibDev. All right reseved ${new Date().getFullYear()}</p>`,
+    },
+
+  })
+})
+
+router.post("/register", (req, res) => {
+  if (req.session.user) {
+    res.redirect("/");
+    return;
+  }
+  const email_address = req.body.email;
+  const password = req.body.password;
+  const confirmPassword = req.body.password_confirm;
+  const first_name = req.body.first_name;
+  const last_name = req.body.last_name;
+
+  if (email_address == "" || password == "" || confirmPassword == "" || first_name == "" || last_name == "") {
+    req.session.errorMessage = "Please fill in all the fields";
+    res.redirect("/register");
+    return;
+  }
+
+  if (password != confirmPassword) {
+    req.session.errorMessage = "Passwords do not match";
+    res.redirect("/register");
+    return;
+  }
+
+  if (password.length < 8) {
+    req.session.errorMessage = "Password must be at least 8 characters";
+    res.redirect("/register");
+    return;
+  }
+
+  bcrypt.hash(password, 10, (err, hash) => {
+    if (err) {
+      req.session.errorMessage = "Something went wrong, please try again";
+      res.redirect("/register");
+      return;
+    }
+    const created_at = new Date().toISOString();
+    const updated_at = new Date().toISOString();
+    model.registerUser(first_name, last_name, email_address, hash, created_at, updated_at).then((result) => {
+      if (result.hasError) {
+        req.session.errorMessage = "Something went wrong, please try again \n " + result.error;
+        res.redirect("/register");
+        return;
+      }
+      res.redirect("/login");
+      return;
+    })
+  })
+
+})
+
+
 
 module.exports = router;

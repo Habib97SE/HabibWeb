@@ -12,6 +12,7 @@ const adminBlogsController = require("./controllers/admin/blogs");
 const adminGuestBlogsController = require("./controllers/admin/guest_blogs");
 const adminSettingsController = require("./controllers/admin/settings");
 const adminContactsController = require("./controllers/admin/contacts");
+const adminUsersController = require("./controllers/admin/users");
 const adminController = require("./controllers/admin");
 
 // laod the controller front area 
@@ -77,6 +78,7 @@ app.use("/admin/blogs", adminBlogsController);
 app.use("/admin/guest_blogs", adminGuestBlogsController);
 app.use("/admin/settings", adminSettingsController);
 app.use("/admin/contacts", adminContactsController);
+app.use("/admin/users", adminUsersController);
 
 
 

@@ -5,7 +5,7 @@ const formidable = require("formidable");
 
 
 router.get("/admin/guest-blogs/new", async (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
     }
@@ -22,7 +22,7 @@ router.get("/admin/guest-blogs/new", async (req, res) => {
         error: error,
         action: "/admin/guest-blogs/new",
         submitButtonText: "Add New Guest Blog",
-        user: req.session.user,
+        user: req.session.admin,
         footer: {
             year: new Date().getFullYear(),
             site: {
@@ -36,7 +36,7 @@ router.get("/admin/guest-blogs/new", async (req, res) => {
 // handle guest blog posts,
 // Base path: /admin/guest-blogs
 router.get("/admin/guest-blogs", async (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
     }
@@ -60,7 +60,7 @@ router.get("/admin/guest-blogs", async (req, res) => {
             keywords: "guest, blogs, admin",
             description: "Guest blogs",
         },
-        user: req.session.user,
+        user: req.session.admin,
         model: modelGuestPosts,
         hasMultiplePages: totalPages > 1,
         prev: prevPage,
@@ -80,7 +80,7 @@ router.get("/admin/guest-blogs", async (req, res) => {
 
 
 router.get("/admin/guest-blogs/:id", async (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
     }
@@ -94,7 +94,7 @@ router.get("/admin/guest-blogs/:id", async (req, res) => {
                 keywords: "guest, blog, admin",
                 description: "Guest blog",
             },
-            user: req.session.user,
+            user: req.session.admin,
             blog: result,
             footer: {
                 year: new Date().getFullYear(),
@@ -108,7 +108,7 @@ router.get("/admin/guest-blogs/:id", async (req, res) => {
 });
 
 router.get("/admin/guest-blogs/delete/:id", async (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
     }
@@ -124,7 +124,7 @@ router.get("/admin/guest-blogs/delete/:id", async (req, res) => {
 });
 
 router.get("/admin/guest-blogs/edit/:id", async (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
     }
@@ -141,7 +141,7 @@ router.get("/admin/guest-blogs/edit/:id", async (req, res) => {
                 description: "Edit guest blog",
             },
             action: "/admin/guest-blogs/edit/" + id,
-            user: req.session.user,
+            user: req.session.admin,
             error: error,
             model: result,
             submitButtonText: "Update",
@@ -161,7 +161,7 @@ router.get("/admin/guest-blogs/edit/:id", async (req, res) => {
 
 router.post("/admin/guest-blogs/edit/:id", async (req, res) => {
     // Check if user is logged in
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
     }
@@ -181,7 +181,6 @@ router.post("/admin/guest-blogs/edit/:id", async (req, res) => {
     // Parse the form
     form.parse(req, async (err, fields, files) => {
         if (err) {
-            console.error(err);
             req.session.errorMessage = "Something went wrong during form parsing. Please try again.";
             res.redirect("/admin/guest-blogs/edit/" + req.params.id);
             return;
@@ -201,7 +200,6 @@ router.post("/admin/guest-blogs/edit/:id", async (req, res) => {
             try {
                 fs.renameSync(oldpath, newpath);
             } catch (err) {
-                console.error(err);
                 req.session.errorMessage = "Failed to upload image.";
                 res.redirect("/admin/guest-blogs/edit/" + req.params.id);
                 return;
@@ -239,7 +237,6 @@ router.post("/admin/guest-blogs/edit/:id", async (req, res) => {
                 return;
             }
         } catch (error) {
-            console.error(error);
             req.session.errorMessage = "Something went wrong during post update. Please try again.";
             res.redirect("/admin/guest-blogs/edit/" + req.params.id);
             return;
@@ -250,7 +247,7 @@ router.post("/admin/guest-blogs/edit/:id", async (req, res) => {
 
 
 router.post("/admin/guest-blogs/new", async (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
     }

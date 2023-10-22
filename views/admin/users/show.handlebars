@@ -1,0 +1,42 @@
+{{> admin_header}}
+    <main class="container">
+      <div class="row col-10 col-mx-auto col-md-12">
+        
+        <div class="columns col-12">
+          {{> admin_sidebar}}
+          <div class="column col-9 col-md-12 col-lg-9 col-xl-8">
+            <h2>Users</h2>
+            <a href="/admin/users/new" class="btn btn-primary">New user</a>
+            {{#if error}}
+                <div class="toast toast-error">
+                    <p>{{error}}</p>
+                </div>
+            {{/if}}
+            
+                <form method="post" action="/admin/users/{{showUser.user_id}}">
+                    <div class="form-group">
+                        <label for="first_name">First Name<span class="text-danger">*</span></label>
+                        <input class="form-input" type="text" name="first_name" id="first_name" placeholder="First Name" value="{{showUser.user.first_name}}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last name<span class="text-danger">*</span></label>
+                        <input class="form-input" type="text" name="last_name" id="last_name" placeholder="Last Name" value="{{showUser.user.last_name}}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email<span class="text-danger">*</span></label>
+                        <input class="form-input" type="email" name="email_address" id="email" placeholder="Email" value="{{showUser.user.email_address}}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password<span class="text-danger">*</span></label>
+                        <input class="form-input" type="password" name="password" id="password" placeholder="Password" value="{{showUser.user.password}}" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Update User" class="btn btn-primary"> <a href="/admin/users" class="btn btn-link">Cancel</a>
+                    </div>
+                </form>
+            
+          </div>  
+        </div>
+      </div>
+    </main>
+{{> admin_footer}}

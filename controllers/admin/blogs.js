@@ -5,28 +5,31 @@ const formidable = require("formidable");
 
 router.get("/new", async (req, res) => {
     // check if cookie is set
-    if (req.session && req.session.user) {
-        res.render("admin/blogs/post.handlebars", {
-            layout: false,
-            header: {
-                title: "Add Blog",
-                keywords: "add, blog, admin",
-                description: "Add blog",
-            },
-            action: "/admin/blog/new",
-            submitButtonText: "Add New Blog",
-            user: req.session.user,
-            footer: {
-                year: new Date().getFullYear(),
-                site: {
-                    name: "HabibDev.",
-                    url: "/",
-                },
-            },
-        });
-    } else {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
+        return;
     }
+    const error = req.session.errorMessage ? req.session.errorMessage : null;
+    delete req.session.errorMessage;
+    res.render("admin/blogs/post.handlebars", {
+        layout: false,
+        header: {
+            title: "Add Blog",
+            keywords: "add, blog, admin",
+            description: "Add blog",
+        },
+        error: error,
+        action: "/admin/blog/new",
+        submitButtonText: "Add New Blog",
+        user: req.session.admin,
+        footer: {
+            year: new Date().getFullYear(),
+            site: {
+                name: "HabibDev.",
+                url: "/",
+            },
+        },
+    });
 });
 
 
@@ -40,6 +43,10 @@ router.get("/new", async (req, res) => {
  * @returns {Object} Blogs
  */
 router.get("/", async (req, res) => {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
+        res.redirect("/admin/login");
+        return;
+    }
     let currentPage = req.query.page ? req.query.page : 1;
     currentPage = parseInt(currentPage);
     let limit = 3;
@@ -51,36 +58,33 @@ router.get("/", async (req, res) => {
     let prevPage = currentPage > 1 ? currentPage - 1 : null;
     const modelBlogs = await model.getBlogs(limit, offset);
     // check if cookie is set
-    if (req.session && req.session.user) {
-        res.render("admin/blogs/blogs.handlebars", {
-            layout: false,
-            header: {
-                title: "Blogs",
-                keywords: "blogs, admin",
-                description: "Admin blogs",
+
+    res.render("admin/blogs/blogs.handlebars", {
+        layout: false,
+        header: {
+            title: "Blogs",
+            keywords: "blogs, admin",
+            description: "Admin blogs",
+        },
+        user: req.session.admin,
+        blogs: modelBlogs,
+        hasMultiplePages: totalPages > 1,
+        prev: prevPage,
+        next: nextPage,
+        currentPage: currentPage,
+        totalPages: totalPages,
+        footer: {
+            year: new Date().getFullYear(),
+            site: {
+                name: "HabibDev.",
+                url: "/",
             },
-            user: req.session.user,
-            blogs: modelBlogs,
-            hasMultiplePages: totalPages > 1,
-            prev: prevPage,
-            next: nextPage,
-            currentPage: currentPage,
-            totalPages: totalPages,
-            footer: {
-                year: new Date().getFullYear(),
-                site: {
-                    name: "HabibDev.",
-                    url: "/",
-                },
-            },
-        });
-    } else {
-        res.redirect("/admin/login");
-    }
+        },
+    });
 });
 
 router.get("/:id", async (req, res) => {
-    if (!req.session && !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
     }
     const id = req.params.id;
@@ -93,7 +97,7 @@ router.get("/:id", async (req, res) => {
                 keywords: "blog, admin",
                 description: "Admin blog",
             },
-            user: req.session.user,
+            user: req.session.admin,
             blog: result,
             footer: {
                 year: new Date().getFullYear(),
@@ -108,21 +112,17 @@ router.get("/:id", async (req, res) => {
 
 router.get("/delete/:id", async (req, res) => {
     // check if cookie is set
-    if (req.session && req.session.user) {
-        const id = req.params.id;
-        const result = await model.deleteBlog(id);
-        if (result) {
-            res.redirect("/admin/blogs");
-        } else {
-            res.redirect("/admin/blogs");
-        }
-    } else {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
+        return;
     }
+    const id = req.params.id;
+    await model.deleteBlog(id);
+    res.redirect("/admin/blogs");
 });
 
 router.get("/edit/:id", async (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
     }
@@ -140,7 +140,7 @@ router.get("/edit/:id", async (req, res) => {
                 description: "Edit blog",
             },
             action: "/admin/blogs/edit/" + id,
-            user: req.session.user,
+            user: req.session.admin,
             error: error,
             blog: result,
             submitButtonText: "Update",
@@ -159,7 +159,7 @@ router.get("/edit/:id", async (req, res) => {
 });
 
 router.post("/edit/:id", async (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
     }
@@ -220,31 +220,14 @@ router.post("/edit/:id", async (req, res) => {
 
 
 router.post("/new", async (req, res) => {
-    if (!req.session && !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
     }
     const form = new formidable.IncomingForm();
     form.parse(req, async (err, fields, files) => {
         if (err) {
-            res.redirect("/admin/blogs/new", {
-                layout: false,
-                header: {
-                    title: "Add Blog",
-                    keywords: "add, blog, admin",
-                    description: "Add blog",
-                },
-                action: "/admin/blog/new",
-                submitButtonText: "Add New Blog",
-                user: req.session.user,
-                errors: ["Failed to upload image."],
-                footer: {
-                    year: new Date().getFullYear(),
-                    site: {
-                        name: "HabibDev.",
-                        url: "/",
-                    },
-                },
-            });
+            req.session.errorMessage = "Failed to parse form.";
+            res.redirect("/admin/blogs/new", {});
             return;
         }
 
@@ -255,25 +238,8 @@ router.post("/new", async (req, res) => {
 
         fs.rename(oldpath, newpath, function (err) {
             if (err) {
-                res.redirect("/admin/blogs/new", {
-                    layout: false,
-                    header: {
-                        title: "Add Blog",
-                        keywords: "add, blog, admin",
-                        description: "Add blog",
-                    },
-                    action: "/admin/blog/new",
-                    submitButtonText: "Add New Blog",
-                    user: req.session.user,
-                    errors: ["Failed to upload image."],
-                    footer: {
-                        year: new Date().getFullYear(),
-                        site: {
-                            name: "HabibDev.",
-                            url: "/",
-                        },
-                    },
-                });
+                req.session.errorMessage = "Failed to upload image.";
+                res.redirect("/admin/blogs/new", {});
                 return;
             }
         }) // end fs.rename()
@@ -281,25 +247,8 @@ router.post("/new", async (req, res) => {
         const title = fields.title[0].trim();
         const content = fields.content[0].trim();
         if (title === "" || content === "") {
-            res.redirect("/admin/blogs/new", {
-                layout: false,
-                header: {
-                    title: "Add Blog",
-                    keywords: "add, blog, admin",
-                    description: "Add blog",
-                },
-                action: "/admin/blog/new",
-                submitButtonText: "Add New Blog",
-                user: req.session.user,
-                errors: ["Title and content are required."],
-                footer: {
-                    year: new Date().getFullYear(),
-                    site: {
-                        name: "HabibDev.",
-                        url: "/",
-                    }
-                }
-            });
+            req.session.errorMessage = "Title and content are required.";
+            res.redirect("/admin/blogs/new", {});
             return;
         }
         const blog = {
@@ -314,26 +263,8 @@ router.post("/new", async (req, res) => {
         if (result) {
             res.redirect("/admin/blogs");
         } else {
-            res.redirect("/admin/blogs/new", {
-                layout: false,
-                header: {
-                    title: "Add Blog",
-                    keywords: "add, blog, admin",
-                    description: "Add blog",
-                },
-                action: "/admin/blog/new",
-                submitButtonText: "Add New Blog",
-                user: req.session.user,
-                errors: ["Title and content are required."],
-                footer: {
-                    year: new Date().getFullYear(),
-                    site: {
-                        name: "HabibDev.",
-                        url: "/",
-                    }
-                }
-
-            }) // end res.redirect("admin/blogs/new")
+            req.session.errorMessage = "Failed to add the blog. Please try again.";
+            res.redirect("/admin/blogs/new", {}) // end res.redirect("admin/blogs/new")
         }
     }); // end form.parse()
 });

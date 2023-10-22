@@ -1,0 +1,85 @@
+{{> header}}
+
+<main class="container">
+    <div class="row">
+        <div class="col-6 col-mx-auto">
+            <div class="card py-2 px-2 my-2">
+                <h2>Create an account</h2>
+                {{#if main.error}}
+                    <div class="toast toast-error">
+                        <p>{{main.error}}</p>
+                    </div>
+                {{/if}}
+                <form method="post" action="/register">
+            <div class="form-group col-6 col-mx-auto">
+                <label for="first_name">First name <span class="text-danger">*</span></label>
+                <input
+                    type="text"
+                    class="form-input"
+                    id="first_name"
+                    name="first_name"
+                    placeholder="Johan"
+                    required
+                />
+            </div>
+            <div class="form-group col-6 col-mx-auto">
+                <label for="last_name">Last name<span class="text-danger">*</span></label>
+                <input
+                    type="text"
+                    class="form-input"
+                    id="last_name"
+                    name="last_name"
+                    placeholder="Johansson"
+                    required
+                />
+            </div>
+
+            <div class="form-group col-6 col-mx-auto">
+                <label for="email">Email<span class="text-danger">*</span></label>
+                <input
+                    type="email"
+                    class="form-input"
+                    id="email"
+                    name="email"
+                    placeholder="email"
+                    required
+                />
+
+            </div>
+            <div class="form-group col-6 col-mx-auto">
+                <label for="password">Password<span class="text-danger">*</span></label>
+                <input
+                    type="password"
+                    class="form-input"
+                    id="password"
+                    name="password"
+                    placeholder="password"
+                    required
+                />
+            </div>
+            <div class="form-group col-6 col-mx-auto">
+                <label for="password_confirm">Confirm Password<span class="text-danger">*</span></label>
+                <input
+                    type="password"
+                    class="form-input"
+                    id="password_confirm"
+                    name="password_confirm"
+                    placeholder="password_confirm"
+                    required
+                />
+            </div>
+
+
+
+            <div class="form-group col-6 col-mx-auto">
+                <button class="btn btn-primary" type="submit">
+                    Create an account
+                </button>
+            </div>
+        </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+{{> footer}}

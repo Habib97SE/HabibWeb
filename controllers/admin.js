@@ -9,26 +9,26 @@ const model = require("../models/admin.js");
 
 router.get("/admin", async (req, res) => {
     // check if cookie is set
-    if (req.session && req.session.user) {
-        res.render("admin/index.handlebars", {
-            layout: false,
-            header: {
-                title: "Admin",
-                keywords: "admin",
-                description: "Admin panel",
-            },
-            user: req.session.user,
-            footer: {
-                year: new Date().getFullYear(),
-                site: {
-                    name: "HabibDev.",
-                    url: "/",
-                },
-            },
-        });
-    } else {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
+        return;
     }
+    res.render("admin/index.handlebars", {
+        layout: false,
+        header: {
+            title: "Admin",
+            keywords: "admin",
+            description: "Admin panel",
+        },
+        user: req.session.admin,
+        footer: {
+            year: new Date().getFullYear(),
+            site: {
+                name: "HabibDev.",
+                url: "/",
+            },
+        },
+    });
 });
 
 router.get("/admin/login", async (req, res) => {
@@ -47,6 +47,13 @@ router.get("/admin/login", async (req, res) => {
             },
             email: "",
             error: error,
+            footer: {
+                year: new Date().getFullYear(),
+                site: {
+                    name: "HabibDev.",
+                    url: "/",
+                },
+            }
         });
     }
 });
@@ -63,7 +70,11 @@ router.post("/admin/login", async (req, res) => {
 
     // check if user exists
     const result = await model.getUser(email);
-
+    if (result === undefined) {
+        req.session.errorMessage = "Invalid email or password.";
+        res.redirect("/admin/login");
+        return;
+    }
     if (
         result.email_address === email &&
         (await bcrypt.compare(password, result.password))
@@ -71,8 +82,9 @@ router.post("/admin/login", async (req, res) => {
         // remove password from result
         delete result.password;
         // create session and set cookie
-        req.session.user = result;
-        res.cookie("user_sid", req.sessionID, {
+        req.session.admin = result;
+        req.session.isAdmin = true;
+        res.cookie("admin_sid", req.sessionID, {
             expires: new Date(Date.now() + 3600000),
             httpOnly: true,
         });
@@ -86,7 +98,7 @@ router.post("/admin/login", async (req, res) => {
 
 router.get("/admin/profile", async (req, res) => {
     // check if cookie is set
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
     }
@@ -111,7 +123,7 @@ router.get("/admin/profile", async (req, res) => {
 
 router.post("/admin/profile", async (req, res) => {
     // if user is not logged in, redirect to login page
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
     }
 
@@ -157,7 +169,7 @@ router.post("/admin/profile", async (req, res) => {
 });
 
 router.get("/admin/logout", async (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
     }

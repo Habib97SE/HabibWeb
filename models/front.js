@@ -278,3 +278,49 @@ module.exports.getGuestPostById = (guest_post_id) => {
     );
   });
 };
+
+module.exports.getUserByEmail = (email) => {
+  return new Promise((resolve, reject) => {
+    db.all(
+      "SELECT * FROM Users WHERE email_address = ?",
+      email,
+      (err, rows) => {
+        if (err) {
+          reject({
+            hasError: true,
+            error: err,
+            user: null
+          });
+        }
+        resolve({
+          hasError: false,
+          error: null,
+          user: rows
+        });
+      }
+    );
+  });
+};
+
+module.exports.registerUser = (first_name, last_name, email_address, hash, created_at, updated_at) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      "INSERT INTO Users (first_name, last_name, email_address, password, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
+      [first_name, last_name, email_address, hash, created_at, updated_at],
+      (err, rows) => {
+        if (err) {
+          reject({
+            hasError: true,
+            error: err,
+            user: null
+          });
+        }
+        resolve({
+          hasError: false,
+          error: null,
+          user: rows
+        });
+      }
+    );
+  });
+}

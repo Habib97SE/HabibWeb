@@ -49,6 +49,24 @@
               <a href="/contact">Contact</a>
             </li>
           </ul>
+          <!-- Add user login and register buttons -->
+          <ul class="navbar-section">
+            {{#if main.user}}
+            <li class="nav-item">
+              Welcome {{main.user.first_name}} {{main.user.last_name}}
+            </li>
+            <li class="nav-item">
+              <a href="/logout">Logout</a>
+            </li>
+            {{else}}
+              <li class="nav-item">
+              <a href="/login">Login</a>
+            </li>
+            <li class="nav-item">
+              <a href="/register">Register</a>
+            </li>
+            {{/if}}
+          </ul>
         </nav>
       </header>
       </div>

@@ -17,15 +17,21 @@
   <body>
     <header class="container">
       <div class="columns col-12">
-        <div class="column col-10">
+        <div class="column col-10 col-md-6">
           <h1 class="text-primary">{{header.title}}</h1>
         </div>  
-        <div class="column col-2">
+        <div class="column col-2 col-md-6">
           <div class="dropdown dropdown-right">
-            <a href="#" class="btn btn-link dropdown-toggle" tabindex="0">
-              {{user.first_name}} {{user.last_name}}
-            </a>
-            <a href="/admin/logout" class="btn btn-link">Logout</a>
+            {{#if user}}
+            <li class="nav-item">
+              <p>{{user.first_name}} {{user.last_name}}</p>
+              <a href="/admin/logout" class="btn btn-primary">Logout</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+              <a href="/admin/login" class="">Login</a>
+            </li>
+            {{/if}}
           </div>
         </div>
       </div>

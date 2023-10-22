@@ -3,7 +3,7 @@ const router = express.Router();
 const model = require("../../models/admin/contacts.js");
 
 router.get("/admin/contacts", async (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
     }
@@ -18,7 +18,7 @@ router.get("/admin/contacts", async (req, res) => {
             description: "Contact",
         },
         error: error,
-        user: req.session.user,
+        user: req.session.admin,
         model: contacts,
         footer: {
             year: new Date().getFullYear(),
@@ -31,7 +31,7 @@ router.get("/admin/contacts", async (req, res) => {
 })
 
 router.get("/admin/contacts/handle/:id", async (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
     }

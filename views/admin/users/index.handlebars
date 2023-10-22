@@ -1,0 +1,54 @@
+{{> admin_header}}
+    <main class="container">
+      <div class="row col-10 col-mx-auto col-md-12">
+        
+        <div class="columns col-12">
+          {{> admin_sidebar}}
+          <div class="column col-9 col-md-12 col-lg-9 col-xl-8">
+            <h2>Users</h2>
+            <a href="/admin/users/new" class="btn btn-primary">New User</a>
+            {{#if error}}
+                <div class="toast toast-error">
+                    <p>{{error}}</p>
+                </div>
+            {{/if}}
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Email</th>
+                  <th>Registered since</th>
+                  <th>Role</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#if users}}
+                    {{#each users.users}}
+                        <tr>
+                            <td>{{first_name}}</td>
+                            <td>{{last_name}}</td>
+                            <td>{{email}}</td>
+                            <td>{{showLocalDateTime created_at}}</td>
+                            <td>{{role}}</td>
+                            <td>
+                                <a href="/admin/users/edit?role={{role}}&id={{id}}" class="btn btn-primary">Edit</a>
+                                <a href="/admin/users/delete?role={{role}}&id={{id}}" class="btn btn-error">Delete</a>
+                            </td>
+                        </tr>
+                    {{/each}}
+                {{else}}
+                    <tr>
+                        <td colspan="4">No users found</td>
+                    </tr>
+                {{/if}}
+
+              </tbody>
+            </table>
+            
+          </div>  
+        </div>
+      </div>
+    </main>
+{{> admin_footer}}

@@ -6,7 +6,7 @@ const formidable = require("formidable");
 router.get("/new", async (req, res) => {
 
 
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         return res.redirect("/admin/login");
     }
     const error = req.session.errorMessage ? req.session.errorMessage : null;
@@ -21,7 +21,7 @@ router.get("/new", async (req, res) => {
         action: "/admin/projects/new",
         error: error,
         submitButtonText: "Add New Project",
-        user: req.session.user,
+        user: req.session.admin,
         footer: {
             year: new Date().getFullYear(),
             site: {
@@ -33,7 +33,7 @@ router.get("/new", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         return res.redirect("/admin/login");
     }
 
@@ -59,7 +59,7 @@ router.get("/", async (req, res) => {
             keywords: "projects, admin",
             description: "Projects",
         },
-        user: req.session.user,
+        user: req.session.admin,
         model: projects,
         hasMultiplePages: totalPages > 1,
         prev: prevPage,
@@ -79,7 +79,7 @@ router.get("/", async (req, res) => {
 
 
 router.get("/:id", async (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
     }
     const id = req.params.id;
@@ -92,7 +92,7 @@ router.get("/:id", async (req, res) => {
                 keywords: "project, admin",
                 description: "Project",
             },
-            user: req.session.user,
+            user: req.session.admin,
             model: result,
             footer: {
                 year: new Date().getFullYear(),
@@ -108,7 +108,7 @@ router.get("/:id", async (req, res) => {
 }); // end router.get()
 
 router.get("/delete/:id", async (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
     }
     const id = req.params.id;
@@ -121,7 +121,7 @@ router.get("/delete/:id", async (req, res) => {
 }); // end router.get()
 
 router.get("/edit/:id", async (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
     }
@@ -139,7 +139,7 @@ router.get("/edit/:id", async (req, res) => {
                 description: "Edit project",
             },
             action: "/admin/projects/edit/" + id,
-            user: req.session.user,
+            user: req.session.admin,
             model: result,
             error: error,
             submitButtonText: "Update",
@@ -159,7 +159,7 @@ router.get("/edit/:id", async (req, res) => {
 
 router.post("/edit/:id", async (req, res) => {
 
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
     }
@@ -220,7 +220,7 @@ router.post("/edit/:id", async (req, res) => {
 
 
 router.post("/new", async (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
     }
