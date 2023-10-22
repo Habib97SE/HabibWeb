@@ -1,6 +1,8 @@
 const express = require("express");
 const model = require("../models/front.js");
-const { parse } = require("handlebars");
+const {
+  parse
+} = require("handlebars");
 
 // get nav items from model and pass them to the view
 
@@ -26,10 +28,8 @@ router.get("/", async (req, res) => {
   res.render("home.handlebars", {
     layout: false,
     header: {
-      title:
-        "HabibDev. Web Developer with expertiese in React.JS, Node.JS and Spring Boot",
-      keywords:
-        "HabibWeb, Portfolio, Web Developer, React.JS, Node.JS, Spring Boot",
+      title: "HabibDev. Web Developer with expertiese in React.JS, Node.JS and Spring Boot",
+      keywords: "HabibWeb, Portfolio, Web Developer, React.JS, Node.JS, Spring Boot",
       description: "This is the home page",
     },
     main: {
@@ -57,7 +57,40 @@ router.get("/about", async (req, res) => {
       description: "This is page is about me and my skills",
     },
     main: {
-      text: `<p>This is the about page</p><img src="https://placehold.co/200x300" alt="random image"> <p>This is another paragraph</p>`,
+      text: `
+      <div class="col-6 col-mx-auto my-2">
+       <img width = "500px"
+      src = "/images/about.jpg"
+      alt = "about me" />
+      </div>
+      <p>Hello, and welcome to my portfolio!
+
+I'm Habib Hezarehee, a computer science enthusiast and undergraduate student deeply passionate about technology and coding. My journey in programming commenced with C++, a powerful language that laid the foundation for my understanding of various computing concepts. Since then, my repertoire has expanded to include Java and JavaScript, allowing me to develop diverse projects ranging from simple algorithms to interactive web applications.</p>
+<ol>
+Some of the languages and frameworks I've worked with include:
+<li>Java</li>
+<li>JavaScript</li>
+<li>React.JS</li>
+<li>Node.JS</li>
+<li>Spring Boot</li>
+<li>SQL</li>
+<li>HTML</li>
+<li>CSS</li>
+<li>Bootstrap</li>
+<li>Git</li>
+
+</ol>
+<p>My skill set doesn't stop with programming languages, though. I've immersed myself in the world of modern technology, gaining broad knowledge in cutting-edge fields and tools. I'm proficient with Microsoft Azure, where I've learned to manage cloud services and resources, ensuring optimal, scalable, and secure operations. I've also delved into the intricacies of Kafka, which has equipped me with valuable insights into real-time data processing and big data.</p>
+
+<p>But I'm not just about technical skills. I'm a problem-solver at heart, with a passion for diving deep into challenges and emerging with strategic solutions. I thrive in collaborative settings, where brainstorming and team efforts lead to innovation and success. My time in university isn't just about earning a degree; it's about making a difference and contributing to projects that have the potential to transform the digital landscape.
+
+This portfolio is a window into my professional life, showcasing projects that I've poured my heart and intellect into. As I continue to evolve and learn, I seek opportunities for internships, collaborative projects, and experiences that will drive my professional growth and enable me to make meaningful contributions to the tech community.</p>
+
+<p>Thank you for visiting, and I invite you to explore my projects, delve into my blog, or contact me directly to discuss potential collaborations, opportunities, or just to exchange ideas!</p>
+
+<p>Best Regards,
+<br />
+Habib Hezarehee</p>`,
     },
     footer: {
       text: `<p>HabibDev. All right reseved ${new Date().getFullYear()}</p>`,
@@ -126,14 +159,17 @@ const nextPage = (pages, next) => {
 };
 
 router.get("/blog", async (req, res) => {
-  // show 3 posts per page
-  let page = req.query.page ? req.query.page : 1;
+  let currentPagee = req.query.page ? req.query.page : 1;
+  currentPagee = parseInt(currentPagee);
   let limit = 3;
-  let offset = (page - 1) * limit;
+  let offset = (currentPagee - 1) * limit;
+  let totalRows = await model.countRowsInTable("Blogs");
+  totalRows = totalRows[0].total;
+  let totalPages = parseInt(totalRows / limit) + 1;
+  let nextPagee = currentPagee < totalPages ? currentPagee + 1 : null;
+  let prevPagee = currentPagee > 1 ? currentPagee - 1 : null;
   let posts = await model.getBlogPosts(limit, offset);
-  let totalPosts = await model.countRowsInTable("Blogs");
-  totalPosts = totalPosts[0].total;
-  let totalPages = totalPosts / limit;
+
 
   res.render("blog.handlebars", {
     layout: false,
@@ -144,9 +180,10 @@ router.get("/blog", async (req, res) => {
     },
     main: {
       posts: posts ? posts : [],
-      prev: parseInt(page) - 1 > 0 ? parseInt(page) - 1 : 1,
-      next: parseInt(page) + 1 <= totalPages ? parseInt(page) + 1 : page,
-      current: page,
+      hasMultiplePages: totalPages > 1,
+      prev: prevPagee,
+      next: nextPagee,
+      currentPage: currentPagee,
       totalPages: totalPages,
     },
     footer: {
@@ -155,34 +192,6 @@ router.get("/blog", async (req, res) => {
   });
 });
 
-router.get("/blog/page/:page", async (req, res) => {
-  // show 3 posts per page
-  let page = req.params.page ? req.params.page : 1;
-  let limit = 3;
-  let offset = (page - 1) * limit;
-  let posts = await model.getBlogPosts(limit, offset);
-  let totalPosts = await model.countRowsInTable("Blogs");
-  totalPosts = totalPosts[0].total;
-  let totalPages = parseInt(totalPosts / limit) + 1;
-  res.render("blog.handlebars", {
-    layout: false,
-    header: {
-      title: "Blog page",
-      keywords: "HabibWeb, Portfolio",
-      description: "This is the blog page",
-    },
-    main: {
-      posts: posts ? posts : [],
-      prev: parseInt(page) - 1 > 0 ? parseInt(page) - 1 : 1,
-      next: parseInt(page) + 1 <= totalPages ? parseInt(page) + 1 : page,
-      current: page,
-      totalPages: totalPages,
-    },
-    footer: {
-      text: `<p>HabibDev. All right reseved ${new Date().getFullYear()}</p>`,
-    },
-  });
-});
 
 router.get("/blog/:blog_id", async (req, res) => {
   let blog_id = req.params.blog_id;
@@ -313,42 +322,21 @@ router.get("newsletter/update", async (req, res) => {
   }
 });
 
-router.get("/guest-blog", async (req, res) => {
-  let limit = 3;
+router.get("/guest-blogs", async (req, res) => {
   let page = req.query.page ? req.query.page : 1;
-  let offset = (page - 1) * limit;
-  let guestPosts = await model.getGuestPosts(limit, offset);
-  let totalGuestPosts = await model.countRowsInTable("Guest_Posts");
-  totalGuestPosts = totalGuestPosts[0].total;
-  let totalPages = totalGuestPosts / limit;
-  res.render("guest-blog.handlebars", {
-    layout: false,
-    header: {
-      title: "Guest Blog page",
-      keywords: "HabibWeb, Portfolio",
-      description: "This is the guest blog page",
-    },
-    main: {
-      guestPosts: guestPosts ? guestPosts : [],
-      prev: parseInt(page) - 1 > 0 ? parseInt(page) - 1 : 1,
-      next: parseInt(page) + 1 <= totalPages ? parseInt(page) + 1 : page,
-      current: page,
-      totalPages: totalPages,
-    },
-    footer: {
-      text: `<p>HabibDev. All right reseved ${new Date().getFullYear()}</p>`,
-    },
-  });
-});
-
-router.get("/guest-blog/page/:page", async (req, res) => {
-  let page = req.params.page ? req.params.page : 1;
+  page = parseInt(page);
   let limit = 3;
   let offset = (page - 1) * limit;
+  let totalRows = await model.countRowsInTable("Guest_Posts");
+  totalRows = totalRows[0].total;
+  let totalPages = parseInt(totalRows / limit) + 1;
+  let nextPage = page < totalPages ? page + 1 : null;
+  let prevPage = page > 1 ? page - 1 : null;
   let guestPosts = await model.getGuestPosts(limit, offset);
-  let totalGuestPosts = await model.countRowsInTable("Guest_Posts");
-  totalGuestPosts = totalGuestPosts[0].total;
-  let totalPages = parseInt(totalGuestPosts / limit) + 1;
+
+
+
+
   res.render("guest-blog.handlebars", {
     layout: false,
     header: {
@@ -358,8 +346,9 @@ router.get("/guest-blog/page/:page", async (req, res) => {
     },
     main: {
       guestPosts: guestPosts ? guestPosts : [],
-      prev: parseInt(page) - 1 > 0 ? parseInt(page) - 1 : 1,
-      next: parseInt(page) + 1 <= totalPages ? parseInt(page) + 1 : page,
+      hasMultiplePages: totalPages > 1,
+      prev: prevPage,
+      next: nextPage,
       current: page,
       totalPages: totalPages,
     },
@@ -369,18 +358,19 @@ router.get("/guest-blog/page/:page", async (req, res) => {
   });
 });
 
-router.get("/guest-blog/:guest_post_id", async (req, res) => {
+
+router.get("/guest-blogs/:guest_post_id", async (req, res) => {
   let guest_post_id = req.params.guest_post_id;
   let guestPost = await model.getGuestPostById(guest_post_id);
-  res.render("guest-post.handlebars", {
+  res.render("post.handlebars", {
     layout: false,
     header: {
       title: "Guest Post page",
-      keywords: "HabibWeb, Portfolio",
+      keywords: "HabibDev., Portfolio",
       description: "This is the guest post page",
     },
     main: {
-      guestPost: guestPost ? guestPost[0] : {},
+      post: guestPost ? guestPost[0] : {},
     },
     footer: {
       text: `<p>HabibDev. All right reseved ${new Date().getFullYear()}</p>`,

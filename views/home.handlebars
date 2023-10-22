@@ -17,7 +17,7 @@
           <!-- Sidebar -->
           <div class="column col-3 col-sm-12 col-md-4 sidebar">
             <h3>Habib Hezarehee</h3>
-            <img class="s-circle" src="https://placehold.co/200x200" alt="" />
+            <img width="150px" class="s-circle" src="/images/profile.jpeg" alt="Profile" />
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
               voluptatum, quibusdam, quia, voluptate quod quos dolorum
@@ -86,7 +86,7 @@
                   Recent blog post sent by users. If you want to send a blog
                   post to me, please <a href="/contact">contact me</a>.
                   {{#if main.guestPosts.length}}
-                  <a href="#" style="float: right; padding-right: 30px"
+                  <a href="/guest-blog" style="float: right; padding-right: 30px"
                     >View all</a
                   >
                   {{/if}}
@@ -149,7 +149,7 @@
                   </div>
                   <div class="card-header">
                     <h4>{{title}}</h4>
-                    <p>{{description}}</p>
+                    <p>{{content}}</p>
                   </div>
                   <div class="card-footer">
                     <a href="/projects/{{project_id}}" class="btn btn-primary"

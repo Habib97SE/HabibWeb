@@ -6,8 +6,16 @@ const sqlite3 = require("sqlite3");
 const path = require("path");
 const bcrypt = require("bcrypt");
 
-const frontController = require("./controllers/front");
+// load the controllers admin area
+const adminProjectController = require("./controllers/admin/projects");
+const adminBlogsController = require("./controllers/admin/blogs");
+const adminGuestBlogsController = require("./controllers/admin/guest_blogs");
+const adminSettingsController = require("./controllers/admin/settings");
+const adminContactsController = require("./controllers/admin/contacts");
 const adminController = require("./controllers/admin");
+
+// laod the controller front area 
+const frontController = require("./controllers/front");
 
 const port = 8000;
 
@@ -18,7 +26,9 @@ const db = new sqlite3.Database("./database.db");
 const app = express();
 
 // configure the body parser
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 app.use(bodyParser.json());
 
 const hbs = exphbs.create({
@@ -30,14 +40,24 @@ const hbs = exphbs.create({
       let firstTwentyWords = words.slice(0, 20);
       return firstTwentyWords.join(" ");
     },
+    showLocalDateTime: function (date) {
+      // show as YYYY-MM-DD HH:MM format
+      let dateObj = new Date(date);
+      let year = dateObj.getFullYear();
+      let month = dateObj.getMonth() + 1;
+      let day = dateObj.getDate();
+      let hour = dateObj.getHours();
+      let minute = dateObj.getMinutes();
+      return `${year}-${month}-${day} ${hour}:${minute}`;
+    }
   },
 });
 
 // configure the session and cookie parser
 app.use(session({
-    secret: bcrypt.genSaltSync(10),
-    resave: false,
-    saveUninitialized: true
+  secret: bcrypt.genSaltSync(10),
+  resave: false,
+  saveUninitialized: true
 }));
 app.use(cookieParser());
 
@@ -52,21 +72,22 @@ app.set("views", path.join(__dirname, "views"));
 // configure the static folder
 app.use(express.static("public"));
 
+app.use("/admin/projects", adminProjectController);
+app.use("/admin/blogs", adminBlogsController);
+app.use("/admin/guest_blogs", adminGuestBlogsController);
+app.use("/admin/settings", adminSettingsController);
+app.use("/admin/contacts", adminContactsController);
+
+
 
 app.use(frontController);
 app.use(adminController);
 
 // Default 404 page
 app.use((req, res, next) => {
-  res.status(404).send("<h1>404 Page Not Found</h1><p>The page you are looking for does not exist.</p>");
+  res.status(404).render("404.handlebars");
 })
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
-
-
-
-
-
-

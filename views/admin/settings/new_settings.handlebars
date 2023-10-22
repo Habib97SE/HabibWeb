@@ -1,0 +1,34 @@
+{{> admin_header}}
+<main class="container">
+    <div class="row col-10 col-mx-auto">
+
+        <div class="columns col-12">
+            {{> admin_sidebar}}
+            <div class="column col-9">
+                <div class="card">
+                    {{#if error}}
+                        <div class="toast toast-error">
+                            <p>{{error}}</p>
+                        </div>
+                    {{/if}}
+                        </div>
+                    <div class="col-10 col-mx-auto">
+                        <form action="/admin/settings/new" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="setting_name">Setting name:</label>
+                                <input type="text" id="setting_name" name="setting_name" placeholder="Setting name" required/>
+                            </div>
+                            <div class="form-group">
+                                <label for="setting_value">Setting value:</label>
+                                <input type="text" id="setting_value" name="setting_value" placeholder="Setting value" required/>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" class="btn btn-primary" value="Add New Setting">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+</main>
+{{> admin_footer}}

@@ -1,7 +1,9 @@
 const sqlite = require("sqlite3");
 const path = require("path");
 const express = require("express");
-const { rejects } = require("assert");
+const {
+  rejects
+} = require("assert");
 
 // blog posts table: Blog
 // guest posts table: Guest_Posts

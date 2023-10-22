@@ -3,6 +3,11 @@
 <main class="container">
       <div class="columns">
         <article class="column col-8 col-md-12 col-mx-auto my-2">
+          {{#unless main.post}}
+            <div class="toast toast-success" style="display: none;">
+              <h2 class="text-center">Post not found</h2>
+            </div>
+          {{/unless}}
         <div class="card s-rounded">
           <div class="card-header">
             <h1>{{main.post.title}}</h1>
@@ -20,8 +25,8 @@
           </div>
           <div class="divider"></div>
           <div class="card-footer">
-            <span class="label">Published on {{main.post.created_at}}</span>
-            <span class="label mx-2 my-2">By {{main.post.full_name}}</span>
+            <span class="label">Published on {{showLocalDateTime main.post.created_at}}</span>
+            <span class="label mx-2 my-2">By {{main.post.author_first_name}} {{ main.post.author_last_name}}</span>
           </div>
         </div>
       </article>

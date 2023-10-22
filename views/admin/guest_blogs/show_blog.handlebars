@@ -1,0 +1,51 @@
+{{> admin_header}}
+
+<main class="container">
+    <div class="row">
+        <div class="columns col-12">
+            {{> admin_sidebar}}
+            <div class="column col-9">
+                {{#if blog.hasError}}
+                    <div class="toast toast-error">
+                        <p>{{blog.error}}</p>
+                    </div>
+                {{else}} <!-- This line was corrected -->
+                    <article class="card">
+                        <div class="card-image">
+                            <img src="{{blog.guest_post.main_image}}" alt="{{blog.guest_post.title}}" class="img-responsive">
+                        </div>
+                        <div class="card-header">
+                            <h1>{{blog.guest_post.title}}</h1>
+                        </div>
+                        <div class="card-body">
+                            {{blog.guest_post.content}}
+                        </div>
+                        <div class="card-footer columns col-12">
+                            <div class="column col-6">
+                            <span class="label my-2">
+                            Published on {{blog.guest_post.created_at}}
+                        </span>
+                                <span class="label my-2">
+                                Last updated on {{blog.guest_post.updated_at}}
+                        </span>
+                            </div>
+                            <div class="column col-6">
+                                <span class="label my-2">
+                                    Author: {{blog.guest_post.author_first_name}} {{blog.guest_post.author_last_name}}
+                                </span>
+                                <span class="label my-2">
+                                    {{#if blog.guest_post.author_email}}
+                                        <a href="mailto:{{blog.guest_post.author_email}}">{{blog.guest_post.author_email}}</a>
+                                    {{/if}}
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                {{/if}} <!-- Closing the if-else block -->
+                
+            </div>
+        </div>
+    </div>
+</main>
+
+{{> admin_footer }}

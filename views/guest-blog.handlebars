@@ -33,7 +33,7 @@
                   </div>
                   <div class="divider"></div>
                   <div class="card-footer">
-                    <a class="btn btn-primary" href="/projects/{{this.project_id}}">Read More</a>
+                    <a class="btn btn-primary" href="/guest-blogs/{{this.guest_post_id}}">Read More</a>
                     <div>
                         <span class="label">{{this.author.first_name}} {{this.author.last_name}}</span>
                     </div>
@@ -48,12 +48,18 @@
                     </div>
               </div>
                 {{/if}}
-              
-              <div class="column col-10 col-mx-auto my-2">
-                <a href="/blog/page/{{main.prev}}" class="btn btn-primary mx-2 my-2">Previous << </a>
-                <span class="btn  mx-2 my-2"> {{main.current}}</span>
-                <a href="/blog/page/{{main.next}}" class="btn btn-primary mx-2 my-2"> >> Next </a>
-              </div>
+                {{#if main.hasMultiplePages}}
+                  <div class="column col-10 col-mx-auto my-2 pagination">
+                    
+                      {{#if main.prev}}
+                        <span class="label"><a href="/guest-blog?page={{main.prev}}">Prev</a></span>
+                      {{/if}}
+                      <span class="label">Page {{main.current}} of {{main.totalPages}}</span>
+                      {{#if main.next}}
+                        <span class="label"><a href="/guest-blog?page={{main.next}}">Next</a></span>
+                      {{/if}}
+                  </div>
+                {{/if}}    
             </div>
           </div>
         </div>

@@ -1,0 +1,43 @@
+{{> admin_header}}
+
+<main class="container">
+    <div class="row">
+        <div class="columns col-12">
+            {{> admin_sidebar}}
+            {{#if model.hasError}}
+                <div class="toast toast-error">
+                    <button class="btn btn-clear float-right"></button>
+                    <p>{{model.error}}</p>
+                </div>
+            {{/if}}
+            {{#if model.project}}
+                <div class="column col-9">
+                    <article class="card">
+                        <div class="card-image">
+                            <img src="{{model.project.main_image}}" alt="{{model.project.title}}" class="img-responsive">
+                        </div>
+                        <div class="card-header">
+                            <h1>{{model.project.title}}</h1>
+                        </div>
+                        <div class="card-body">
+                            {{model.project.content}}
+                        </div>
+                        <div class="card-footer columns col-12">
+                            <div class="column col-6">
+                            <span class="label my-2">
+                            Published on {{model.project.created_at}}
+                        </span>
+                                <span class="label my-2">
+                                Last updated on {{model.project.updated_at}}
+                        </span>
+                            </div>
+                            
+                        </div>
+                    </article>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+</main>
+
+{{> admin_footer }}
