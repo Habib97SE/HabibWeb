@@ -19,10 +19,7 @@
             <h3>Habib Hezarehee</h3>
             <img width="150px" class="s-circle" src="/images/profile.jpeg" alt="Profile" />
             <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-              voluptatum, quibusdam, quia, voluptate quod quos dolorum
-              voluptatibus quae voluptas quas quibusdam, quia, voluptate quod
-              quos dolorum voluptatibus quae voluptas quas.
+              Habib Hezarehee är en ambitiös och tekniskt kunnig datateknikstudent vid Jönköping University, med en passion för mjukvaruutveckling och mobila plattformar. Med erfarenhet inom programmeringsspråk som Python, JavaScript, och React.JS, samt en stark bakgrund inom service och teamarbete, utmärker sig Habib genom sin förmåga att lösa problem och leverera kvalitativa IT-lösningar. Hans drivkraft och anpassningsförmåga, kombinerat med en naturlig nyfikenhet för teknologiska innovationer, gör honom till en värdefull tillgång i alla teknikorienterade team.
             </p>
             <code> Address: {{main.address}}</code>
             <ul>
@@ -52,14 +49,14 @@
               {{#if main.blogPosts.length}}
                 {{#each main.blogPosts}}
                     <!-- Blog Post Card --> 
-                    <div class="column col-4 col-sm-12">
+                    <div class="column col-4 col-lg-4 col-md-6 col-sm-12">
                         <div class="card">
                             <div class="card-image">
                                 <img src="{{main_image}}" class="img-responsive" alt="{{title}}">
                             </div>
                             <div class="card-header">
                                 <h4>{{title}}</h4>
-                                <p>{{content}}</p>
+                                <p>{{{firstTwentyWords content}}}...</p>
                             </div>
                             <div class="card-footer">
                                 <a href="/blog/{{blog_id}}" class="btn btn-primary">Read More</a>
@@ -78,50 +75,7 @@
             
             </div>
             <div class="divider"></div>
-            <!-- Row 2: Blog posts by Guests -->
-            <div class="columns">
-              <div class="column col-12">
-                <h4>Blog posts by Guests</h4>
-                <p>
-                  Recent blog post sent by users. If you want to send a blog
-                  post to me, please <a href="/contact">contact me</a>.
-                  {{#if main.guestPosts.length}}
-                  <a href="/guest-blog" style="float: right; padding-right: 30px"
-                    >View all</a
-                  >
-                  {{/if}}
-                </p>
-              </div>
-              <!-- Guest post Card -->
-              {{#if main.guestPosts.length}}
-              {{#each main.guestPosts}}
-              <div class="column col-4 col-sm-12">
-                <div class="card">
-                  <div class="card-image">
-                    <img
-                      src="{{main_image}}"
-                      class="img-responsive"
-                      alt="{{title}}"
-                    />
-                  </div>
-                  <div class="card-header">
-                    <h4>{{title}}</h4>
-                    <p>{{content}}</p>
-                  </div>
-                  <div class="card-footer">
-                    <a href="/guest/{{guest_id}}" class="btn btn-primary"
-                      >Read More</a>
-                  </div>
-                </div>
-              </div>
-              {{/each}}
-              {{else}}
-                <p class="bg-danger">
-                    No guest post found.
-                </p>
-              {{/if}}
-            </div>
-
+            
             <!-- Row 3: Portfolio -->
             <div class="columns">
               <div class="column col-12">

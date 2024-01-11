@@ -13,6 +13,20 @@ router.get("/admin", async (req, res) => {
         res.redirect("/admin/login");
         return;
     }
+    blogPost = await model.getLastBlogPost();
+    if (!blogPost.hasError) {
+        blogPost = blogPost.blog;
+    } else {
+        blogPost = null;
+    }
+    projectPost = await model.getLastProjectPost();
+    if (!projectPost.hasError) {
+        projectPost = projectPost.project;
+    } else {
+        projectPost = null;
+    }
+    const userTableLength = await model.countNumberOfRows("Users");
+    const adminTableLength = await model.countNumberOfRows("Admins");
     res.render("admin/index.handlebars", {
         layout: false,
         header: {
@@ -21,6 +35,10 @@ router.get("/admin", async (req, res) => {
             description: "Admin panel",
         },
         user: req.session.admin,
+        project: projectPost[0],
+        blog: blogPost[0],
+        userLength: userTableLength["COUNT(*)"],
+        adminLength: adminTableLength["COUNT(*)"],
         footer: {
             year: new Date().getFullYear(),
             site: {
@@ -109,8 +127,8 @@ router.get("/admin/profile", async (req, res) => {
             keywords: "profile, admin",
             description: "Admin profile",
         },
-        user: req.session.user,
-        registeredSince: new Date(req.session.user.created_at).toDateString(),
+        user: req.session.admin,
+        registeredSince: new Date(req.session.admin.created_at).toDateString(),
         footer: {
             year: new Date().getFullYear(),
             site: {
@@ -144,12 +162,12 @@ router.post("/admin/profile", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const updated_user = {
-        admin_id: req.session.user.admin_id,
+        admin_id: req.session.admin.admin_id,
         first_name: firstName,
         last_name: lastName,
         email_address: emailAddress,
         password: hashedPassword,
-        created_at: req.session.user.created_at,
+        created_at: req.session.admin.created_at,
         updated_at: new Date().toISOString(),
     };
     // update user
@@ -157,9 +175,7 @@ router.post("/admin/profile", async (req, res) => {
 
     if (result) {
         // update session
-        req.session.user.first_name = firstName;
-        req.session.user.last_name = lastName;
-        req.session.user.email_address = emailAddress;
+        req.session.admin = updated_user;
         res.redirect("/admin/profile");
         return;
     } else {

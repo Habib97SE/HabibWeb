@@ -9,11 +9,7 @@
                     <h1 style="display: inline-block;">{{header.title}}</h1>
                 </div>
                 <div class="col-12">
-                    {{#if blog.hasError}}
-                        <div class="toast toast-error">
-                            <p>{{blog.error}}</p>
-                        </div>
-                    {{/if}}
+                   
                     {{#if error}}
                         <div class="toast toast-error">
                             <p>{{ error }}</p>
@@ -24,13 +20,13 @@
                     <div class="form-group">
                         <label for="title">Title <span class="text-danger">*</span></label>
                         <input type="text" name="title" placeholder="Title" id="title" class="form-input"
-                               value="{{blog.blog.title}}" required>
+                                required>
                     </div>
                     <div class="form-group">
-                        <label for="content">Content <span class="text-danger">*</span></label>
-                        <textarea name="content" rows="20" id="content" placeholder="Content" class="form-input"
+                        <label for="textEditorTextArea">Content <span class="text-danger">*</span></label>
+                        <textarea name="content" rows="20" id="textEditorTextArea" placeholder="Content" class="form-input"
                                   required>
-                            {{blog.blog.content}}
+                            
                         </textarea>
                     </div>
                     <div class="form-group">

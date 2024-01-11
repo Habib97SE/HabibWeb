@@ -1,3 +1,4 @@
+<!DOCTYPE html> 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -11,28 +12,74 @@
       rel="stylesheet"
       href="https://unpkg.com/spectre.css/dist/spectre.min.css"
     />
+    <script src="https://cdn.tiny.cloud/1/tkg3rwz1ge3xzpr1f7sm15oq6piiy18zo7cmotlvp7ju6gil/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
+    <script>
+      tinymce.init({
+        selector: '#textEditorTextArea'
+      });
+      </script>
     <link rel="stylesheet" href="/css/admin.css" />
+    <style>
+      body {
+    margin: 0;
+    padding-top: 0; /* Remove padding at the top */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+      header {
+    background-color: #f8f9fa; /* Light grey background */
+    border-bottom: 1px solid #e1e5eb; /* Slight border */
+    padding: 0.5rem 0; /* Reduced padding */
+    margin-bottom: 0; /* Remove bottom margin if any */
+  }
+      header .navbar-brand {
+    color: #5755d9; /* Theme color for the 'Admin' text */
+    text-decoration: none;
+    margin-top: 0; /* Remove extra margin at the top */
+    padding-top: 0; /* Remove extra padding at the top */
+  }
+      header .navbar-brand:hover {
+        color: #3436e7; /* Darken color on hover */
+      }
+      header .container > .columns {
+    align-items: center; /* Align items vertically */
+    margin-top: 0; /* Remove extra margin at the top */
+    padding-top: 0; /* Remove extra padding at the top */
+    justify-content: space-between;
+  }
+  
+  
+      footer {
+        background-color: #f8f9fa; /* Light grey background */
+        border-top: 1px solid #e1e5eb; /* Slight border */
+        padding: 1rem 0;
+        text-align: center; /* Center footer text */
+        margin-top: auto; /* Push footer to the bottom */
+      }
+      footer p {
+        margin: 0; /* Remove default margin */
+      }
+    </style>
   </head>
   <body>
     <header class="container">
       <div class="columns col-12">
         <div class="column col-10 col-md-6">
-          <h1 class="text-primary">{{header.title}}</h1>
+          <h1><a href="/admin" class="navbar-brand mr-2">Admin</a></h1>
         </div>  
         <div class="column col-2 col-md-6">
-          <div class="dropdown dropdown-right">
-            {{#if user}}
-            <li class="nav-item">
-              <p>{{user.first_name}} {{user.last_name}}</p>
-              <a href="/admin/logout" class="btn btn-primary">Logout</a>
-            </li>
-            {{else}}
-            <li class="nav-item">
-              <a href="/admin/login" class="">Login</a>
-            </li>
-            {{/if}}
-          </div>
+          {{#if user}}
+          <li class="nav-item" style="list-style-type: none; ">
+            <p>{{user.first_name}} {{user.last_name}} <a href="/admin/logout" class="btn btn-primary">Logout</a></p>
+            
+          </li>
+          {{else}}
+          <li class="nav-item">
+            <a href="/admin/login" class="">Login</a>
+          </li>
+          {{/if}}
         </div>
       </div>
     </header>

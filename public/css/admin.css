@@ -13,8 +13,9 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+    width: 80%;
     height: auto;
+
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -27,6 +28,12 @@ main {
     height: auto;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.site-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .menu ul {
@@ -42,4 +49,51 @@ main {
     padding: 10px;
     background-color: #fff;
     border: 1px solid #ddd;
+}
+.card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e1e5eb;
+  padding: .75rem 1rem;
+}
+
+.menu {
+  list-style-type: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.menu-item {
+  border-bottom: 1px solid #e1e5eb;
+}
+
+.menu-item a {
+  display: block;
+  padding: .75rem 1rem;
+  text-decoration: none;
+  color: #5755d9;
+  transition: background-color .2s ease;
+}
+
+.menu-item a:hover {
+  background-color: #e9ecef;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item .active {
+  background-color: #5755d9;
+  color: white;
+}
+
+/* Ensure the active class has higher specificity */
+.menu-item a.active {
+  background-color: #5755d9;
+  color: white;
 }

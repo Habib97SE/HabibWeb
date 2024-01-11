@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const model = require("../../models/admin/settings.js");
+const formidable = require("formidable");
 
-router.get("/admin/settings", async (req, res) => {
+router.get("/", async (req, res) => {
     if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
@@ -32,7 +33,7 @@ router.get("/admin/settings", async (req, res) => {
     });
 }); // end router.get()
 
-router.post("/admin/settings", async (req, res) => {
+router.post("/", async (req, res) => {
     if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
@@ -66,7 +67,7 @@ router.post("/admin/settings", async (req, res) => {
 
 });
 
-router.get("/admin/settings/new", async (req, res) => {
+router.get("/new", async (req, res) => {
     if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
@@ -93,7 +94,7 @@ router.get("/admin/settings/new", async (req, res) => {
     });
 }); // end router.get()
 
-router.post("/admin/settings/new", async (req, res) => {
+router.post("/new", async (req, res) => {
     if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;

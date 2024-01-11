@@ -3,18 +3,16 @@
 <div class="container my-2">
     <div class="row">
         <div class="columns col-12">
-            {{> admin_sidebar}}
+            {{>admin_sidebar}}
             <div class="column col-9">
                 <div class="col-12">
                     <h1 style="display: inline-block;">{{header.title}}</h1>
                 </div>
                 <div class="col-12">
-                    {{#if errors}}
+                   
+                    {{#if error}}
                         <div class="toast toast-error">
-                            <button class="btn btn-clear float-right"></button>
-                            {{#each errors}}
-                                <p>{{this}}</p>
-                            {{/each}}
+                            <p>{{ error }}</p>
                         </div>
                     {{/if}}
                 </div>
@@ -22,34 +20,19 @@
                     <div class="form-group">
                         <label for="title">Title <span class="text-danger">*</span></label>
                         <input type="text" name="title" placeholder="Title" id="title" class="form-input"
-                               value="{{blog.title}}" required>
+                               value="{{blog.blog.title}}" required>
                     </div>
                     <div class="form-group">
                         <label for="content">Content <span class="text-danger">*</span></label>
-                        <textarea name="content" rows="20" id="content" placeholder="Content" class="form-input"
+                        <textarea name="content" rows="20" id="textEditorTextArea" placeholder="Content" class="form-input"
                                   required>
-                            {{blog.content}}
+                            {{blog.blog.content}}
                         </textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="first_name">First name: <span class="text-danger">*</span></label>
-                        <input type="text" name="first_name" placeholder="Firstname" id="tags" class="form-input"
-                               value="{{blog.tags}}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="last_name">Last name: <span class="text-danger">*</span></label>
-                        <input type="text" name="last_name" placeholder="Lastname" id="tags" class="form-input"
-                               value="{{blog.tags}}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email: <span class="text-danger">*</span></label>
-                        <input type="email" name="email" placeholder="Email" id="tags" class="form-input"
-                               value="{{blog.tags}}" required>
                     </div>
                     <div class="form-group">
                         <label for="main_image">Main Image <span class="text-danger">*</span></label>
                         <input type="file" name="image" id="main_image" placeholder="Main Image" class="form-input"
-                               required>
+                               >
                     </div>
                     <div class="form-group">
                         <input type="submit" class="btn btn-primary" value="{{submitButtonText}}">

@@ -88,8 +88,8 @@ module.exports.updateProject = (project) => {
 module.exports.addProject = (project) => {
     return new Promise((resolve, reject) => {
         db.run(
-            "INSERT INTO Projects (title, description, main_image, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
-            [project.title, project.description, project.main_image, project.created_at, project.updated_at],
+            "INSERT INTO Projects (title, content, main_image, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+            [project.title, project.content, project.main_image, project.created_at, project.updated_at],
             (err) => {
                 if (err) {
                     reject(err);
@@ -98,4 +98,18 @@ module.exports.addProject = (project) => {
             }
         );
     }); // end new Promise()
+}
+
+module.exports.countRows = (table) => {
+    return new Promise((resolve, reject) => {
+        db.get(
+            `SELECT COUNT(*) AS count FROM ${table}`,
+            (err, row) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(row);
+            }
+        );
+    });
 }

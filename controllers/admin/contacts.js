@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const model = require("../../models/admin/contacts.js");
 
-router.get("/admin/contacts", async (req, res) => {
+router.get("/", async (req, res) => {
     if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;
@@ -30,7 +30,7 @@ router.get("/admin/contacts", async (req, res) => {
     })
 })
 
-router.get("/admin/contacts/handle/:id", async (req, res) => {
+router.get("/handle/:id", async (req, res) => {
     if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
         return;

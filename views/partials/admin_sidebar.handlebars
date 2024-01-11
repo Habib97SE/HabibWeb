@@ -1,17 +1,20 @@
 <div class="column col-3 col-md-12 col-xl-3">
   <div class="card">
-    <h3>Dashboard</h3>
-    <ul>
-      <li style="text-transform: capitalize;"><a
-          href="/admin/profile"
-        >{{user.first_name}}
-          {{user.last_name}}</a></li>
-      <li><a href="/admin/blogs">Blog</a></li>
-      <li><a href="/admin/guest-blogs/">Guest posts</a></li>
-      <li><a href="/admin/projects">Projects</a></li>
-      <li><a href="/admin/contacts">Contacts</a></li>
-      <li><a href="/admin/users">Users</a></li>
-      <li><a href="/admin/settings">Settings</a></li>
+    <div class="card-header">
+      <h3 class="card-title h5">Dashboard</h3>
+    </div>
+    <ul class="menu">
+      <li class="menu-item">
+        <a href="/admin/profile" class="active">
+          {{user.first_name}}
+          {{user.last_name}}
+        </a>
+      </li>
+      <li class="menu-item"><a href="/admin/blogs">Blog</a></li>
+      <li class="menu-item"><a href="/admin/projects">Projects</a></li>
+      <li class="menu-item"><a href="/admin/contacts">Contacts</a></li>
+      <li class="menu-item"><a href="/admin/users">Users</a></li>
+      <li class="menu-item"><a href="/admin/settings">Settings</a></li>
     </ul>
   </div>
 </div>

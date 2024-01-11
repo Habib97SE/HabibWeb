@@ -11,11 +11,10 @@ const db = new sqlite.Database(
 );
 
 module.exports.getGuestBlogs = (limit, offset) => {
-    let model = {};
     return new Promise((resolve, reject) => {
 
         db.all(
-            "SELECT guest_post_id, title, content, main_image, author_first_name, author_last_name, created_at, updated_at FROM Guest_Posts LIMIT ? OFFSET ?",
+            "SELECT * FROM Guest_Posts LIMIT ? OFFSET ?",
             [limit, offset],
             (err, rows) => {
                 if (err) {
@@ -102,3 +101,17 @@ module.exports.addGuestBlog = (guest_post) => {
         );
     }); // end new Promise()
 }; // end addGuestBlog()
+
+module.exports.countRows = (table) => {
+    return new Promise((resolve, reject) => {
+        db.get(
+            `SELECT COUNT(*) AS count FROM ${table}`,
+            (err, row) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(row);
+            }
+        );
+    });
+}

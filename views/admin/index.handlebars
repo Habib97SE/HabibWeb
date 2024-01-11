@@ -8,53 +8,44 @@
             <div class="card">
               <div class="card-header">
                 <h2>Blog</h2>
+                <h4><a href="/admin/blogs">View all</a></h4>
               </div>
               <div class="divider"></div>
               <div class="card-body">
-                <ul>
-                  <li>Posts: {{blog.posts}}</li>
-                  <li>Comments: {{blog.comments}}</li>
-                  <li>Categories: {{blog.categories}}</li>
-                  <li>Tags: {{blog.tags}}</li>
-                </ul>
+                <article> 
+                  <h2>{{blog.title}}</h2>
+                  <p>{{{firstTwentyWords blog.content}}}</p>
+                  <img src="{{blog.main_image}}" alt="{{blog.title}}" class="img-responsive">
+                  <button class="btn btn-primary" onclick="window.location.href='/admin/blog/edit/{{blog.blog_id}}'">Edit</button>
+                </article>
               </div>
             </div>
-            <div class="card">
-              <div class="card-header">
-                <h2>Guest Blog</h2>
-              </div>
-              <div class="divider"></div>
-              <div class="card-body">
-                <ul>
-                  <li>Posts: {{guestblog.posts}}</li>
-                  <li>Comments: {{guestblog.comments}}</li>
-                  <li>Categories: {{guestblog.categories}}</li>
-                  <li>Tags: {{guestblog.tags}}</li>
-                </ul>
-              </div>
-            </div>
+            
             <div class="card">
               <div class="card-header">
                 <h2>Projects</h2>
+                <h4><a href="/admin/projects">View all</a></h4>
               </div>
               <div class="divider"></div>
               <div class="card-body">
-                <ul>
-                  <li>Projects: {{projects.projects}}</li>
-                  <li>Categories: {{projects.categories}}</li>
-                  <li>Tags: {{projects.tags}}</li>
-                </ul>
+                <article>
+                  <h2>{{project.title}}</h2>
+                  <p>{{{firstTwentyWords project.content}}}</p>
+                  <img src="{{project.main_image}}" alt="{{project.title}}" class="img-responsive">
+                  <button class="btn btn-primary" onclick="window.location.href='/admin/projects/edit/{{project.project_id}}'">Edit</button>
+                </article>
               </div>
             </div>
             <div class="card">
               <div class="card-header">
                 <h2>Users</h2>
+                <h4><a href="/admin/users">View all</a></h4>
               </div>
               <div class="divider"></div>
               <div class="card-body">
                 <ul>
-                  <li>Users: {{users.users}}</li>
-                  <li>Roles: {{users.roles}}</li>
+                  <li>Number of users: {{userLength}}</li>
+                  <li>Number of admins: {{adminLength}}</li>
                 </ul>
               </div>
             </div>

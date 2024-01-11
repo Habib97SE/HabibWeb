@@ -101,7 +101,7 @@ Habib Hezarehee</p>`,
   });
 });
 
-const createContactObject = () => {
+const createContactObject = (req) => {
   return {
     layout: false,
     header: {
@@ -120,14 +120,14 @@ const createContactObject = () => {
 };
 
 router.get("/contact", async (req, res) => {
-  res.render("contact.handlebars", createContactObject());
+  res.render("contact.handlebars", createContactObject(req));
 });
 
 router.post("/contact", async (req, res) => {
   let name = req.body.name;
   let email = req.body.email;
   let message = req.body.message;
-  let contactObject = createContactObject();
+  let contactObject = createContactObject(req);
   let submissionMessage = `<div class="toast toast-error"><p>Please fill in all the fields.</p></div>`;
   if (!name || !email || !message) {
     contactObject.main.submissionMessage = submissionMessage;
@@ -136,14 +136,12 @@ router.post("/contact", async (req, res) => {
   } else {
     // save the message to the database
     let result = await model.saveMessage(name, email, message);
-    console.log(result);
+
     if (!result) {
-      console.log("There is an error inside else{}");
       contactObject.main.submissionMessage = `<div class="toast toast-error"><p>Something went wrong, please try again.</p></div>`;
       // if error from database, send error message to the user
       return res.render("contact.handlebars", contactObject);
     }
-    console.log("There is no error");
     // send success message to the user
     submissionMessage = `<div class="col-9 toast toast-success"><p>Your message has been sent successfully. I am going to contact you within 24 hours.</p></div>`;
     contactObject.main.submissionMessage = submissionMessage;
@@ -331,63 +329,6 @@ router.get("newsletter/update", async (req, res) => {
   }
 });
 
-router.get("/guest-blogs", async (req, res) => {
-  let page = req.query.page ? req.query.page : 1;
-  page = parseInt(page);
-  let limit = 3;
-  let offset = (page - 1) * limit;
-  let totalRows = await model.countRowsInTable("Guest_Posts");
-  totalRows = totalRows[0].total;
-  let totalPages = parseInt(totalRows / limit) + 1;
-  let nextPage = page < totalPages ? page + 1 : null;
-  let prevPage = page > 1 ? page - 1 : null;
-  let guestPosts = await model.getGuestPosts(limit, offset);
-
-
-
-
-  res.render("guest-blog.handlebars", {
-    layout: false,
-    header: {
-      title: "Guest Blog page",
-      keywords: "HabibWeb, Portfolio",
-      description: "This is the guest blog page",
-    },
-    main: {
-      user: req.session.user ? req.session.user : null,
-      guestPosts: guestPosts ? guestPosts : [],
-      hasMultiplePages: totalPages > 1,
-      prev: prevPage,
-      next: nextPage,
-      current: page,
-      totalPages: totalPages,
-    },
-    footer: {
-      text: `<p>HabibDev. All right reseved ${new Date().getFullYear()}</p>`,
-    },
-  });
-});
-
-
-router.get("/guest-blogs/:guest_post_id", async (req, res) => {
-  let guest_post_id = req.params.guest_post_id;
-  let guestPost = await model.getGuestPostById(guest_post_id);
-  res.render("post.handlebars", {
-    layout: false,
-    header: {
-      title: "Guest Post page",
-      keywords: "HabibDev., Portfolio",
-      description: "This is the guest post page",
-    },
-    main: {
-      user: req.session.user ? req.session.user : null,
-      post: guestPost ? guestPost[0] : {},
-    },
-    footer: {
-      text: `<p>HabibDev. All right reseved ${new Date().getFullYear()}</p>`,
-    },
-  });
-});
 
 router.get("/login", (req, res) => {
   if (req.session.user) {
@@ -439,7 +380,7 @@ router.post("/login", (req, res) => {
 
 
   model.getUserByEmail(email_address).then((result) => {
-    console.dir(result);
+
     if (result.hasError) {
       req.session.errorMessage = "Something went wrong, please try again";
       res.redirect("/login");
@@ -451,7 +392,6 @@ router.post("/login", (req, res) => {
       return;
     }
     const user = result.user[0];
-    console.dir(user);
     bcrypt.compare(password, user.password, (err, same) => {
       if (err) {
         req.session.errorMessage = "Something went wrong, please try again";
@@ -466,8 +406,6 @@ router.post("/login", (req, res) => {
       // remove password from user 
       delete user.password;
       req.session.user = user;
-      console.log("req.session.user");
-      console.dir(req.session.user);
       res.redirect("/");
       return;
     })
@@ -478,12 +416,17 @@ router.post("/login", (req, res) => {
 router.get("/logout", (req, res) => {
   if (req.session.user) {
     delete req.session.user;
+    res.redirect("/");
   } else {
     res.redirect("/");
   }
 })
 
 router.get("/register", (req, res) => {
+  if (req.session.user) {
+    res.redirect("/");
+    return;
+  }
   const error = req.session.errorMessage ? req.session.errorMessage : null;
   delete req.session.errorMessage;
   res.render("register.handlebars", {
@@ -505,7 +448,7 @@ router.get("/register", (req, res) => {
   })
 })
 
-router.post("/register", (req, res) => {
+router.post("/register", async (req, res) => {
   if (req.session.user) {
     res.redirect("/");
     return;
@@ -534,24 +477,37 @@ router.post("/register", (req, res) => {
     return;
   }
 
-  bcrypt.hash(password, 10, (err, hash) => {
-    if (err) {
-      req.session.errorMessage = "Something went wrong, please try again";
+  const user = await model.getUserByEmail(email_address);
+  if (!user.hasError) {
+    if (user.user.length > 0) {
+      req.session.errorMessage = "The email address is already taken";
       res.redirect("/register");
       return;
     }
-    const created_at = new Date().toISOString();
-    const updated_at = new Date().toISOString();
-    model.registerUser(first_name, last_name, email_address, hash, created_at, updated_at).then((result) => {
-      if (result.hasError) {
-        req.session.errorMessage = "Something went wrong, please try again \n " + result.error;
-        res.redirect("/register");
-        return;
-      }
-      res.redirect("/login");
+  }
+
+  try {
+    const hash = await bcrypt.hash(password, 10);
+    const created_at = new Date();
+    const updated_at = new Date();
+    const result = await model.registerUser(first_name, last_name, email_address, hash, created_at, updated_at);
+    if (result.hasError) {
+      req.session.errorMessage = "Something went wrong, please try again";
+      res.redirect("/register");
       return;
-    })
-  })
+    } else {
+      req.session.user = result.user;
+      res.redirect("/");
+      return;
+    }
+
+  } catch (err) {
+    console.error(err);
+    req.session.errorMessage = "Something went wrong, please try again";
+    res.redirect("/register");
+  }
+
+
 
 })
 

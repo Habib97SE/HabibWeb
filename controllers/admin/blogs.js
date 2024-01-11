@@ -2,6 +2,11 @@ const express = require("express");
 const router = express.Router();
 const model = require("../../models/admin/blogs.js");
 const formidable = require("formidable");
+const path = require("path");
+const fs = require("fs");
+
+
+
 
 router.get("/new", async (req, res) => {
     // check if cookie is set
@@ -19,7 +24,7 @@ router.get("/new", async (req, res) => {
             description: "Add blog",
         },
         error: error,
-        action: "/admin/blog/new",
+        action: "/admin/blogs/new",
         submitButtonText: "Add New Blog",
         user: req.session.admin,
         footer: {
@@ -93,7 +98,7 @@ router.get("/:id", async (req, res) => {
         res.render("admin/blogs/show_post.handlebars", {
             layout: false,
             header: {
-                title: result.title,
+                title: result.blog.title,
                 keywords: "blog, admin",
                 description: "Admin blog",
             },
@@ -132,7 +137,7 @@ router.get("/edit/:id", async (req, res) => {
     delete req.session.errorMessage;
 
     if (result) {
-        res.render("admin/blogs/post.handlebars", {
+        res.render("admin/blogs/edit.handlebars", {
             layout: false,
             header: {
                 title: "Edit Blog",
@@ -164,7 +169,11 @@ router.post("/edit/:id", async (req, res) => {
         return;
     }
     const oldBlog = await model.getBlog(req.params.id);
-    const form = new formidable.IncomingForm();
+    const form = new formidable.IncomingForm({
+        allowEmptyFiles: true,
+        minFileSize: 0,
+    });
+
     if (oldBlog.hasError) {
         req.session.errorMessage = "Blog not found.";
         res.redirect("/admin/blogs/edit/" + id);
@@ -175,6 +184,7 @@ router.post("/edit/:id", async (req, res) => {
         const id = req.params.id;
         if (err) {
             req.session.errorMessage = "Failed to parse form.";
+            console.log(err);
             res.redirect("/admin/blogs/edit/" + id);
             return;
         }
@@ -182,7 +192,7 @@ router.post("/edit/:id", async (req, res) => {
         if (files.image && files.image[0].size > 0) {
             let uploadedFile = files.image[0];
             let oldpath = uploadedFile.filepath;
-            let newpath = path.join(__dirname, "../public/images/" + uploadedFile.originalFilename);
+            let newpath = path.join(__dirname, "../../public/images/" + uploadedFile.originalFilename);
             filePath = "/images/" + uploadedFile.originalFilename;
             fs.rename(oldpath, newpath, function (err) {
                 if (err) {
@@ -233,7 +243,7 @@ router.post("/new", async (req, res) => {
 
         let uploadedFile = files.image[0];
         let oldpath = uploadedFile.filepath;
-        let newpath = path.join(__dirname, "../public/images/" + uploadedFile.originalFilename);
+        let newpath = path.join(__dirname, "../../public/images/" + uploadedFile.originalFilename);
         let filePath = "/images/" + uploadedFile.originalFilename;
 
         fs.rename(oldpath, newpath, function (err) {
@@ -254,7 +264,7 @@ router.post("/new", async (req, res) => {
         const blog = {
             title: title,
             content: content,
-            author: req.session.user.admin_id,
+            author: req.session.admin.admin_id,
             main_image: filePath,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),

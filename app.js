@@ -9,7 +9,6 @@ const bcrypt = require("bcrypt");
 // load the controllers admin area
 const adminProjectController = require("./controllers/admin/projects");
 const adminBlogsController = require("./controllers/admin/blogs");
-const adminGuestBlogsController = require("./controllers/admin/guest_blogs");
 const adminSettingsController = require("./controllers/admin/settings");
 const adminContactsController = require("./controllers/admin/contacts");
 const adminUsersController = require("./controllers/admin/users");
@@ -21,8 +20,7 @@ const frontController = require("./controllers/front");
 const port = 8000;
 
 const bodyParser = require("body-parser");
-// load the database
-const db = new sqlite3.Database("./database.db");
+
 
 const app = express();
 
@@ -34,6 +32,7 @@ app.use(bodyParser.json());
 
 const hbs = exphbs.create({
   defaultLayout: "main.handlebars",
+
   partialsDir: path.join(__dirname, "views", "partials"),
   helpers: {
     firstTwentyWords: function (text) {
@@ -63,6 +62,9 @@ app.use(session({
 app.use(cookieParser());
 
 
+// add tinymce to the project
+app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
+
 
 // configure the template engine
 app.engine("handlebars", hbs.engine);
@@ -75,7 +77,6 @@ app.use(express.static("public"));
 
 app.use("/admin/projects", adminProjectController);
 app.use("/admin/blogs", adminBlogsController);
-app.use("/admin/guest_blogs", adminGuestBlogsController);
 app.use("/admin/settings", adminSettingsController);
 app.use("/admin/contacts", adminContactsController);
 app.use("/admin/users", adminUsersController);

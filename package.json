@@ -28,6 +28,7 @@
     "formidable": "^3.5.1",
     "handlebars": "^4.7.8",
     "nodemon": "^3.0.1",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.6",
+    "tinymce": "^6.7.2"
   }
 }

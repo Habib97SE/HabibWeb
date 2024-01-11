@@ -84,20 +84,7 @@ module.exports.getAddress = () => {
   });
 };
 
-module.exports.getGuestPosts = (limit) => {
-  return new Promise((resolve, reject) => {
-    db.all(
-      "SELECT * FROM Guest_Posts ORDER BY created_at DESC LIMIT ?",
-      limit,
-      (err, rows) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(rows);
-      }
-    );
-  });
-};
+
 
 module.exports.getProjects = (limit) => {
   return new Promise((resolve, reject) => {
@@ -319,6 +306,28 @@ module.exports.registerUser = (first_name, last_name, email_address, hash, creat
           hasError: false,
           error: null,
           user: rows
+        });
+      }
+    );
+  });
+}
+
+module.exports.getLastBlogPost = () => {
+  return new Promise((resolve, reject) => {
+    db.all(
+      "SELECT * FROM Blogs ORDER BY created_at DESC LIMIT 1",
+      (err, rows) => {
+        if (err) {
+          reject({
+            hasError: true,
+            error: err,
+            blog: null
+          });
+        }
+        resolve({
+          hasError: false,
+          error: null,
+          blog: rows
         });
       }
     );
