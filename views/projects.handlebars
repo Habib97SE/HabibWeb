@@ -10,9 +10,7 @@
               <div class="column col-12">
                 <h4>Overview of my projects</h4>
                 <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Voluptates, quibusdam. Lorem ipsum dolor sit amet consectetur
-                  adipisicing elit. Voluptates, quibusdam.
+                  Welcome to our portfolio, where innovation meets design and functionality. Our projects are a testament to our commitment to excellence and our passion for creating solutions that resonate with users and deliver tangible results. Each project showcased here embodies our dedication to quality, attention to detail, and an innovative approach to problem-solving.
                 </p>
               </div>
               <!-- Card 1 -->
@@ -29,7 +27,7 @@
                   </div>
                   <div class="card-header">
                     <h4>{{this.title}}</h4>
-                    <p>{{firstTwentyWords this.content}}</p>
+                    <p>{{{firstTwentyWords this.content}}}</p>
                   </div>
                   <div class="divider"></div>
                   <div class="card-footer">
@@ -47,9 +45,9 @@
                 {{/if}}
               
               <div class="column col-10 col-mx-auto my-2">
-                <a href="/blog/page/{{main.prev}}" class="btn btn-primary mx-2 my-2">Previous << </a>
+                <a href="/projects/page/{{main.prev}}" class="btn btn-primary mx-2 my-2">Previous << </a>
                 <span class="btn  mx-2 my-2"> {{main.current}}</span>
-                <a href="/blog/page/{{main.next}}" class="btn btn-primary mx-2 my-2"> >> Next </a>
+                <a href="/projects/page/{{main.next}}" class="btn btn-primary mx-2 my-2"> >> Next </a>
               </div>
             </div>
           </div>

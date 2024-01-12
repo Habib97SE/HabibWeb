@@ -61,7 +61,10 @@ router.get("/", async (req, res) => {
     let totalPages = parseInt(totalRows / limit) + 1;
     let nextPage = currentPage + 1 < totalPages ? currentPage + 1 : null;
     let prevPage = currentPage > 1 ? currentPage - 1 : null;
-    const modelBlogs = await model.getBlogs(limit, offset);
+    let modelBlogs = await model.getBlogs(limit, offset);
+
+
+
     // check if cookie is set
 
     res.render("admin/blogs/blogs.handlebars", {

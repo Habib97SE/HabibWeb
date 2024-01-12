@@ -19,8 +19,14 @@
             <h3>Habib Hezarehee</h3>
             <img width="150px" class="s-circle" src="/images/profile.jpeg" alt="Profile" />
             <p>
-              Habib Hezarehee är en ambitiös och tekniskt kunnig datateknikstudent vid Jönköping University, med en passion för mjukvaruutveckling och mobila plattformar. Med erfarenhet inom programmeringsspråk som Python, JavaScript, och React.JS, samt en stark bakgrund inom service och teamarbete, utmärker sig Habib genom sin förmåga att lösa problem och leverera kvalitativa IT-lösningar. Hans drivkraft och anpassningsförmåga, kombinerat med en naturlig nyfikenhet för teknologiska innovationer, gör honom till en värdefull tillgång i alla teknikorienterade team.
-            </p>
+              Habib Hezarehee is an ambitious and technically savvy IT student at 
+              Jönköping University, with a passion for software development and 
+              mobile platforms. With experience in programming languages such as 
+              Python, JavaScript, and React.JS, as well as a strong background in 
+              service and teamwork, Habib excels through his ability to solve 
+              problems and deliver quality IT solutions. His drive and adaptability,
+              combined with a natural curiosity for technological innovations, make 
+              him a valuable asset in any technology-oriented team.</p>
             <code> Address: {{main.address}}</code>
             <ul>
               <li><a target="_blank" href="{{main.linkedin}}">Linkedin</a></li>
@@ -35,7 +41,8 @@
             <!-- Row 1: Blog posts by Author -->
             <div class="columns">
               <div class="column col-12">
-                <h4>{{@index}} Blog posts by Author</h4>
+                <hr />
+                <h4>Blog posts by Author</h4>
                 <p>
                   I usually write about web development, programming, and other
                   related topics.
@@ -78,7 +85,9 @@
             
             <!-- Row 3: Portfolio -->
             <div class="columns">
+              
               <div class="column col-12">
+                <hr />
                 <h4>Projects</h4>
                 <p>
                   My last three projects are listed here.
@@ -93,6 +102,7 @@
               {{#if main.projects.length}}
               {{#each main.projects}}
               <div class="column col-4 col-sm-12">
+                
                 <div class="card">
                   <div class="card-image">
                     <img
@@ -103,7 +113,7 @@
                   </div>
                   <div class="card-header">
                     <h4>{{title}}</h4>
-                    <p>{{content}}</p>
+                    <p>{{{content}}}</p>
                   </div>
                   <div class="card-footer">
                     <a href="/projects/{{project_id}}" class="btn btn-primary"

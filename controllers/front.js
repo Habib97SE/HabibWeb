@@ -45,7 +45,7 @@ router.get("/", async (req, res) => {
       guestPosts: guestPosts ? guestPosts : [],
     },
     footer: {
-      text: `<p class="text-danger">HabibDev. All right reseved ${new Date().getFullYear()}</p>`,
+      text: `<p>HabibDev. All right reseved ${new Date().getFullYear()}</p>`,
     },
   });
 });
@@ -172,7 +172,45 @@ router.get("/blog", async (req, res) => {
   let prevPagee = currentPagee > 1 ? currentPagee - 1 : null;
   let posts = await model.getBlogPosts(limit, offset);
 
+  for (let i = 0; i < posts.length; i++) {
+    let post = posts[i];
+    const date = new Date(post.created_at);
+    post.created_at = date.toDateString().split("T")[0];
+  }
 
+  res.render("blog.handlebars", {
+    layout: false,
+    header: {
+      title: "Blog page",
+      keywords: "HabibWeb, Portfolio",
+      description: "This is the blog page",
+    },
+    main: {
+      user: req.session.user ? req.session.user : null,
+      posts: posts ? posts : [],
+      hasMultiplePages: totalPages > 1,
+      prev: prevPagee,
+      next: nextPagee,
+      currentPage: currentPagee,
+      totalPages: totalPages,
+    },
+    footer: {
+      text: `<p>HabibDev. All right reseved ${new Date().getFullYear()}</p>`,
+    },
+  });
+});
+
+router.get("/blog/page/:page", async (req, res) => {
+  let currentPagee = req.params.page ? req.params.page : 1;
+  currentPagee = parseInt(currentPagee);
+  let limit = 3;
+  let offset = (currentPagee - 1) * limit;
+  let totalRows = await model.countRowsInTable("Blogs");
+  totalRows = totalRows[0].total;
+  let totalPages = parseInt(totalRows / limit) + 1;
+  let nextPagee = currentPagee < totalPages ? currentPagee + 1 : null;
+  let prevPagee = currentPagee > 1 ? currentPagee - 1 : null;
+  let posts = await model.getBlogPosts(limit, offset);
   res.render("blog.handlebars", {
     layout: false,
     header: {
@@ -199,6 +237,10 @@ router.get("/blog", async (req, res) => {
 router.get("/blog/:blog_id", async (req, res) => {
   let blog_id = req.params.blog_id;
   let post = await model.getBlogPostById(blog_id);
+
+  const date = new Date(post[0].created_at);
+  post[0].created_at = date.toDateString().split("T")[0];
+
   res.render("post.handlebars", {
     layout: false,
     header: {

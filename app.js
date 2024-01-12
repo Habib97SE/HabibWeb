@@ -40,15 +40,9 @@ const hbs = exphbs.create({
       let firstTwentyWords = words.slice(0, 20);
       return firstTwentyWords.join(" ");
     },
-    showLocalDateTime: function (date) {
-      // show as YYYY-MM-DD HH:MM format
-      let dateObj = new Date(date);
-      let year = dateObj.getFullYear();
-      let month = dateObj.getMonth() + 1;
-      let day = dateObj.getDate();
-      let hour = dateObj.getHours();
-      let minute = dateObj.getMinutes();
-      return `${year}-${month}-${day} ${hour}:${minute}`;
+    showLocalDateTime: function (dateToFormat) {
+      const date = new Date(dateToFormat);
+      return date.toDateString().split("T")[0];
     }
   },
 });
@@ -85,6 +79,8 @@ app.use("/admin/users", adminUsersController);
 
 app.use(frontController);
 app.use(adminController);
+
+
 
 // Default 404 page
 app.use((req, res, next) => {

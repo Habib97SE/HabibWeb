@@ -13,7 +13,7 @@
                 </div>
             {{/if}}
             
-                <form method="post" action="/admin/users/{{showUser.user_id}}">
+                <form method="post" action="/admin/users/edit?role={{role}}&id={{showUser.user.id}}">
                     <div class="form-group">
                         <label for="first_name">First Name<span class="text-danger">*</span></label>
                         <input class="form-input" type="text" name="first_name" id="first_name" placeholder="First Name" value="{{showUser.user.first_name}}" required>

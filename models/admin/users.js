@@ -155,34 +155,38 @@ module.exports.deleteAdmin = (id) => {
 
 module.exports.createUser = (first_name, last_name, email_address, password, created_at, updated_at) => {
     return new Promise((resolve, reject) => {
-        db.run("INSERT INTO Users (first_name, last_name, email_address, password, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)", first_name, last_name, email_address, password, created_at, updated_at, (err) => {
-            if (err) {
-                reject({
-                    hasError: true,
-                    error: err
+        db.run("INSERT INTO Users (first_name, last_name, email_address, password, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
+            first_name, last_name, email_address, password, created_at, updated_at,
+            (err) => {
+                if (err) {
+                    reject({
+                        hasError: true,
+                        error: err
+                    });
+                }
+                resolve({
+                    hasError: false,
+                    error: null
                 });
-            }
-            resolve({
-                hasError: false,
-                error: null
             });
-        });
     });
 };
 
 module.exports.createAdmin = (first_name, last_name, email_address, password, created_at, updated_at) => {
     return new Promise((resolve, reject) => {
-        db.run("INSERT INTO Admins (first_name, last_name, email_address, password, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)", first_name, last_name, email_address, password, created_at, updated_at, (err) => {
-            if (err) {
-                reject({
-                    hasError: true,
-                    error: err
+        db.run("INSERT INTO Admins (first_name, last_name, email_address, password, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
+            first_name, last_name, email_address, password, created_at, updated_at,
+            (err) => {
+                if (err) {
+                    reject({
+                        hasError: true,
+                        error: err
+                    });
+                }
+                resolve({
+                    hasError: false,
+                    error: null
                 });
-            }
-            resolve({
-                hasError: false,
-                error: null
             });
-        });
     });
 };

@@ -52,15 +52,11 @@
                 {{/if}}
               
               {{#if main.hasMultiplePages}}
-                <div class="col-12">
-                  {{#if main.prev}}
-                  <span class="label mx-2 px-2"><a href="/blog?page={{main.prev}}">Previous</a></span>
-                  {{/if}}
-                  <span class="label mx-2 px-2">Page {{main.currentPage}} of {{main.totalPages}}</span>
-                  {{#if main.next}}
-                  <span class="label mx-2 px-2"><a href="/blog?page={{main.next}}">Next</a></span>
-                  {{/if}}
-                </div>
+                <div class="column col-10 col-mx-auto my-2">
+                <a href="/blog/page/{{main.prev}}" class="btn btn-primary mx-2 my-2">Previous << </a>
+                <span class="btn  mx-2 my-2"> {{main.currentPage}}</span>
+                <a href="/blog/page/{{main.next}}" class="btn btn-primary mx-2 my-2"> >> Next </a>
+              </div>
               {{/if}}
             </div>
           </div>

@@ -112,13 +112,16 @@ router.get("/:id", async (req, res) => {
 router.get("/delete/:id", async (req, res) => {
     if (!req.session || !req.session.admin || !req.session.isAdmin) {
         res.redirect("/admin/login");
+        return;
     }
     const id = req.params.id;
     const result = await model.deleteProject(id);
     if (result) {
         res.redirect("/admin/projects");
+        return;
     } else {
         res.redirect("/admin/projects");
+        return;
     }
 }); // end router.get()
 
@@ -160,48 +163,57 @@ router.get("/edit/:id", async (req, res) => {
 }); // end router.get()
 
 router.post("/edit/:id", async (req, res) => {
-
     if (!req.session || !req.session.admin || !req.session.isAdmin) {
-        res.redirect("/admin/login");
-        return;
+        return res.redirect("/admin/login");
     }
+
     const project = await model.getProject(req.params.id);
+    if (!project) {
+        req.session.errorMessage = "Project not found.";
+        return res.redirect("/admin/projects");
+    }
+
+    let filePath = project.project.main_image;
+
     const form = new formidable.IncomingForm({
         allowEmptyFiles: true,
         minFileSize: 0,
     });
+
     form.parse(req, async (err, fields, files) => {
         const id = req.params.id;
         if (err) {
-            redirect("/admin/projects/edit/" + id);
-            return;
+            req.session.errorMessage = "Error parsing the form.";
+            return res.redirect("/admin/projects/edit/" + id);
         }
+
         // check if user has chosen an image to upload 
-        let filePath = project.main_image;
+
         if (files.image && files.image[0].size > 0) {
-            let uploadedFile = files.image[0];
-            let oldpath = uploadedFile.filepath;
-            let newpath = path.join(__dirname, "../public/images/" + uploadedFile.originalFilename);
+            const uploadedFile = files.image;
+            const oldpath = uploadedFile.filepath;
+            const newpath = path.join(__dirname, "../../public/images/" + uploadedFile.originalFilename);
             filePath = "/images/" + uploadedFile.originalFilename;
-            fs.rename(oldpath, newpath, function (err) {
-                if (err) {
-                    req.session.errorMessage = "Failed to upload image.";
-                    res.redirect("/admin/projects/edit/" + id);
-                    return;
-                }
-            }); // end fs.rename() 
+
+            try {
+                await fs.promises.rename(oldpath, newpath);
+            } catch (err) {
+                req.session.errorMessage = "Failed to upload image.";
+                res.redirect("/admin/projects/edit/" + id);
+                return;
+            }
         }
-
-
 
         const title = fields.title[0].trim();
         const content = fields.content[0].trim();
 
         if (title === "" || content === "") {
             req.session.errorMessage = "Title and content are required.";
-            res.redirect("/admin/projects/edit/" + id, {});
+            res.redirect("/admin/projects/edit/" + id);
             return;
         }
+
+        console.dir(filePath);
 
         const editedProject = {
             project_id: parseInt(id),
@@ -209,18 +221,25 @@ router.post("/edit/:id", async (req, res) => {
             content: content,
             main_image: filePath,
             updated_at: new Date().toISOString()
-        }
-        const result = await model.updateProject(editedProject);
-        // if project updated successfully
-        if (result) {
-            res.redirect("/admin/projects");
-        } else {
+        };
+
+        try {
+            const result = await model.updateProject(editedProject);
+            if (result) {
+                res.redirect("/admin/projects");
+                return;
+            } else {
+                throw new Error('Failed to update the project.');
+            }
+        } catch (error) {
+            console.error("Error updating project:", error);
             req.session.errorMessage = "Something went wrong. Please try again.";
-            res.redirect("/admin/projects/edit/" + id, {});
+            res.redirect("/admin/projects/edit/" + id);
             return;
         }
     }); // end form.parse()
 }); // end router.post()
+
 
 
 
@@ -233,26 +252,30 @@ router.post("/new", async (req, res) => {
     form.parse(req, async (err, fields, files) => {
         if (err) {
             req.session.errorMessage = "Error parsing the form.";
-            return res.redirect("/admin/projects/new");
+            res.redirect("/admin/projects/new");
+            return;
         }
 
         let uploadedFile = files.image[0];
         let oldpath = uploadedFile.filepath;
-        let newpath = path.join(__dirname, "../public/images/" + uploadedFile.originalFilename);
+        let newpath = path.join(__dirname, "../../public/images/" + uploadedFile.originalFilename);
         let filePath = "/images/" + uploadedFile.originalFilename;
 
         fs.rename(oldpath, newpath, function (err) {
             if (err) {
                 req.session.errorMessage = "Failed to upload image.";
-                return res.redirect("/admin/projects/new");
+                res.redirect("/admin/projects/new");
+                return;
             }
+
         }); // end fs.rename()
 
         const title = fields.title[0].trim();
         const content = fields.content[0].trim();
         if (title === "" || content === "") {
             req.session.errorMessage = "Title and content are required.";
-            return res.redirect("/admin/projects/new");
+            res.redirect("/admin/projects/new");
+            return;
         }
 
         const project = {
@@ -266,15 +289,18 @@ router.post("/new", async (req, res) => {
         try {
             const result = await model.addProject(project);
             if (result) {
-                return res.redirect("/admin/projects");
+                res.redirect("/admin/projects");
+                return;
             } else {
                 req.session.errorMessage = "Something went wrong. Please try again.";
-                return res.redirect("/admin/projects/new");
+                res.redirect("/admin/projects/new");
+                return;
             }
         } catch (error) {
             console.error("Error adding project:", error);
             req.session.errorMessage = "An error occurred while adding the project.";
-            return res.redirect("/admin/projects/new");
+            res.redirect("/admin/projects/new");
+            return;
         }
     });
 });

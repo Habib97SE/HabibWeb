@@ -6,14 +6,14 @@
           {{> admin_sidebar}}
           <div class="column col-9 col-md-12 col-lg-9 col-xl-8">
             <h2>Users</h2>
-            <a href="/admin/users/create" class="btn btn-primary">Create User</a>
+            
             {{#if error}}
                 <div class="toast toast-error">
                     <p>{{error}}</p>
                 </div>
             {{/if}}
             
-                <form method="post" action="/admin/users/{{showUser.user_id}}">
+                <form method="post" action="/admin/users/new">
                     <div class="form-group">
                         <label for="first_name">First Name<span class="text-danger">*</span></label>
                         <input class="form-input" type="text" name="first_name" id="first_name" placeholder="First Name" value="{{showUser.user.first_name}}" required>
@@ -32,16 +32,18 @@
                     </div>
                     <div class="form-group">
                         <label for="confirm_password">Confirm Password<span class="text-danger">*</span></label>
-                        <input type="passwqord" class="form-input" name="confirm_password" id="confirm_password" placeholder="Confirm Password" value="{{showUser.user.password}}" required>
+                        <input type="password" class="form-input" name="confirm_password" id="confirm_password" placeholder="Confirm Password" value="{{showUser.user.password}}" required>
                     </div>
                     <div class="form-group">
                         <label for="role">Role<span class="text-danger">*</span></label>
                         <select class="form-select" name="role" id="role" required>
                             <option value="admin"  >Admin</option>
                             <option value="user" >User</option>
+                        </select>
                     </div>
-                    <div class="form-group">
-                        <input type="submit" value="Update User" class="btn btn-primary"> <a href="/admin/users" class="btn btn-link">Cancel</a>
+                    <div class="form-group my-2 mx-4">
+                        <input type="submit" value="Create new User" class="btn btn-primary" /> 
+                        <a href="/admin/users" class="btn btn-link">Cancel</a>
                     </div>
                 </form>
             
